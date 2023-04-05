@@ -88,8 +88,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a>
   <ul class="collapse">
+  <li><a href="#objective-and-motivation" id="toc-objective-and-motivation" class="nav-link" data-scroll-target="#objective-and-motivation">Objective and Motivation</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#model-and-hypothesis" id="toc-model-and-hypothesis" class="nav-link" data-scroll-target="#model-and-hypothesis">Model and Hypothesis</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul></li>
   </ul>
@@ -125,8 +128,88 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Abstract.</strong></p>
 <p><strong>Keywords.</strong> svars, impulse responses, quarto, R, monetary policy</p>
 </blockquote>
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
+<section id="section" class="level1">
+<h1></h1>
+<section id="objective-and-motivation" class="level2">
+<h2 class="anchored" data-anchor-id="objective-and-motivation">Objective and Motivation</h2>
+<p>The goal of this research projectis to analyze the impact of unconditional government stipends on the U.S. economy, such as stimulus checks. To identify these effects I will analyze the effects of the stimulus checks and increased unemployment benefits issued by the US government in the wake of the COVID-19 pandemic.</p>
+<p>This is an important topic as inequality rises direct government action may become increasingly necessary. Increased taxation on the rich and targeted government programs can only do so much to help those at the lower and middle ends of income. Especially as the groups in need of help become larger and their needs more diverse, the high administrative costs of judging who gets the benefits and what they are applicable to may become untenable. In this case, regular stimulus payments or higher unemployment benefits may become necessary to the continued economic health of the country. However, without knowing the effects of these methods, it is difficult to say whether or not they would do more harm than good.</p>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>For the purpose of this analysis data the United States Federal Reserve will be utilized. This source uses government data and is considered highly reliable. A potential issue is the information available being limited by the frequency with which the government collects data. To counter this, the estimates will use a long history and quarterly data which is the most frequent commonly available data.</p>
+<p>The core factors chosen, median income, gdp per capita, and unemployment, were chosen for widely being considered to be strong indicators of economic health. An estimated four lags are used as this is quarterly data so by incorporating four lags seasonal effects are adequately accounted for.</p>
+<p>Real GDP Per Capita, Quarterly: <a href="https://fred.stlouisfed.org/series/A939RX0Q048SBEA" class="uri">https://fred.stlouisfed.org/series/A939RX0Q048SBEA</a></p>
+<p>Unemployment Rate, Monthly: <a href="https://fred.stlouisfed.org/series/UNRATE" class="uri">https://fred.stlouisfed.org/series/UNRATE</a></p>
+<p>Median Usual Weekly Real Earnings: <a href="https://fred.stlouisfed.org/series/LES1252881600Q" class="uri">https://fred.stlouisfed.org/series/LES1252881600Q</a></p>
+<p>Median income is chosen over average income as, due to income disparity in the united states, there are large distortions in the average compared to the median. As stimulus payments and increased unemployment benefits are likely to more significantly impact lower income individuals it was determined that the median income would prove more suitable</p>
+<p>GDP per capita is selected as it accounts for fluctuations in population over time instead of including effects that could be simple shifts in total population</p>
+<p>Unemployment is utilized at it is of paramount concern in either confirming or assuaging concerns that, with relatively less incentive to work, that a portion of the population will elect not to work.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'fredr' was built under R version 4.2.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'zoo'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There were 301 warnings in `summarise()`.
+The first warning was:
+ℹ In argument: `series_id = (function (x, ...) ...`.
+ℹ In group 1: `date = "1948Q1"`.
+Caused by warning in `mean.default()`:
+! argument is not numeric or logical: returning NA
+ℹ Run `dplyr::last_dplyr_warnings()` to see the 300 remaining warnings.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-and-hypothesis" class="level2">
+<h2 class="anchored" data-anchor-id="model-and-hypothesis">Model and Hypothesis</h2>
+<p>The model utilized will be a trivariate SVAR with the following specification</p>
+<p><em>inc<sub>t</sub></em> + α<sub>1,2</sub>gdp<sub>t</sub> + α<sub>1,3</sub>uem<sub>t</sub> = β<sub>1,0</sub> + β<sub>1,1</sub>inc<sub>t-1</sub> + β<sub>1,2</sub>gdp<sub>t-1</sub> + β<sub>1,3</sub>uem<sub>t-1</sub> + … + β<sub>1,10</sub>inc<sub>t-4</sub> + β<sub>1,11</sub>gdp<sub>t-4</sub> + β<sub>1,12</sub>uem<sub>t-4</sub> + μ<sub>inct</sub></p>
+<p><em>α<sub>2,1</sub>inc<sub>t</sub></em> + gdp<sub>t</sub> + α<sub>2,3</sub>uem<sub>t</sub> = β<sub>2,0</sub> + β<sub>2,1</sub>inc<sub>t-1</sub> + β<sub>2,2</sub>gdp<sub>t-1</sub> + β<sub>2,3</sub>uem<sub>t-1</sub> + … + β<sub>2,10</sub>inc<sub>t-4</sub> + β<sub>2,11</sub>gdp<sub>t-4</sub> + β<sub>2,12</sub>uem<sub>t-4</sub> + μ<sub>gdpt</sub></p>
+<p><em>α<sub>3,1</sub>inc<sub>t</sub></em> + α<sub>3,2</sub>gdp<sub>t</sub> + uem<sub>t</sub> = β<sub>3,0</sub> + β<sub>3,1</sub>inc<sub>t-1</sub> + β<sub>3,2</sub>gdp<sub>t-1</sub> + β<sub>3,3</sub>uem<sub>t-1</sub> + … + β<sub>3,10</sub>inc<sub>t-4</sub> + β<sub>3,11</sub>gdp<sub>t-4</sub> + β<sub>3,12</sub>uem<sub>t-4</sub> + μ<sub>uemt</sub></p>
+<p>Where inc is median income, gdp is GDP per capita, uem is unemployment</p>
+<p>α terms are present to indicate present relationships between the variables</p>
+<p>β<sub>1,0</sub> β<sub>2,0</sub> β<sub>3,0</sub> are each intercept terms</p>
+<p>all other β terms are a multiplier on the value of prior period values on the present</p>
+<p>… indicates that the variables in question follow a repeating pattern, in this case lags from 1 to 4 periods</p>
+<p>μ is an error term</p>
+<p>t subscripts indicate the time period relative to the present. E.g. t-1 indicates the value of the variable one period in the past.</p>
+<p>I would also like to in my final report include a control variable for COVID as COVID doubtless impacted the economy in a way unrelated to any other changes.</p>
+<p>This model goes to four lags as the data is quarterly and this ensures that seasonality effects are removed. The model will serve to identify the effects of shocks on the US economy stemming from stimulus payments as stimulus payments may be treated as one period shocks to income and the impulse response function will tell us the effects that such payments have on the economy.</p>
+<p>Estimating the effects of increased unemployment benefits is more difficult but can be achieved by treating these as a wage floor as presumably if one would be paid less than unemployment benefits one will choose not to work except as necessary to maintain benefits. Thus median income can be replaced with minimum wage in the above calculation and high levels of unemployment benefits treated as an effective increase in the minimum wage. As an alternative, the effects of a universal basic income program may be estimated as a permanent increase in income to all members of society regardless of their employment status.</p>
+<p>These are all relevant to the economic situation in the United States going forward. A combination of stagnating wages, low minimum wage, and increasing income inequality threatens to force more forceful government action to avert economic crisis stemming from a lower-class which no longer lives at a subsistence level. While this state has not yet been reached it is a looming threat which must be addressed. The number of government programs to help low income individuals is immense but oftentimes much time and energy is spent ensuring that the “undeserving” are not given these benefits which can lead to those in need being rejected or ending up in worse circumstances due to long delays in receiving assistance. All of the proposed methods due to their weak targeting requirements would provide relief more rapidly and potentially aid in economic growth more than programs targeted at covering expenses related to a specific aspect of life.</p>
+</section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 
