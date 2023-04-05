@@ -8,13 +8,159 @@ execute:
 bibliography: references.bib
 ---
 
-> **Abstract.** 
+> **Abstract.**
 >
 > **Keywords.** svars, impulse responses, quarto, R, monetary policy
 
-# Introduction
+# 
+
+## Objective and Motivation
+
+The goal of this research projectis to analyze the impact of unconditional government stipends on the U.S. economy, such as stimulus checks. To identify these effects I will analyze the effects of the stimulus checks and increased unemployment benefits issued by the US government in the wake of the COVID-19 pandemic.
+
+This is an important topic as inequality rises direct government action may become increasingly necessary. Increased taxation on the rich and targeted government programs can only do so much to help those at the lower and middle ends of income. Especially as the groups in need of help become larger and their needs more diverse, the high administrative costs of judging who gets the benefits and what they are applicable to may become untenable. In this case, regular stimulus payments or higher unemployment benefits may become necessary to the continued economic health of the country. However, without knowing the effects of these methods, it is difficult to say whether or not they would do more harm than good.
+
+## Data
+
+For the purpose of this analysis data the United States Federal Reserve will be utilized. This source uses government data and is considered highly reliable. A potential issue is the information available being limited by the frequency with which the government collects data. To counter this, the estimates will use a long history and quarterly data which is the most frequent commonly available data.
+
+The core factors chosen, median income, gdp per capita, and unemployment, were chosen for widely being considered to be strong indicators of economic health. An estimated four lags are used as this is quarterly data so by incorporating four lags seasonal effects are adequately accounted for.
+
+Real GDP Per Capita, Quarterly: <https://fred.stlouisfed.org/series/A939RX0Q048SBEA>
+
+Unemployment Rate, Monthly: <https://fred.stlouisfed.org/series/UNRATE>
+
+Median Usual Weekly Real Earnings: <https://fred.stlouisfed.org/series/LES1252881600Q>
+
+Median income is chosen over average income as, due to income disparity in the united states, there are large distortions in the average compared to the median. As stimulus payments and increased unemployment benefits are likely to more significantly impact lower income individuals it was determined that the median income would prove more suitable
+
+GDP per capita is selected as it accounts for fluctuations in population over time instead of including effects that could be simple shifts in total population
+
+Unemployment is utilized at it is of paramount concern in either confirming or assuaging concerns that, with relatively less incentive to work, that a portion of the population will elect not to work.
+
+```{r}
+#load requisite packages
+library(fredr)
+library(zoo)
+library(dplyr)
+
+#set key for accessing FRED data
+fredr_set_key("f1d6de070cd07cd6028872a3bc573657")
+
+#Load in Fred data
+#Real GFP Per Capita and Unemployment Rate and median earnings
+rgdpcap = fredr(series_id = "A939RX0Q048SBEA")
+urate = fredr(series_id = "UNRATE")
+mearn = fredr(series_id = "LES1252881600Q")
 
 
+#Change unemployment data to quarterly
+#this errors but the entire rest of the the urate changes don't work 
+#without it, the numbers seem to all be correct after checking by hand
+qurate = urate %>%
+  group_by(date = format(as.yearqtr(date, "%b-%Y"), "%YQ%q")) %>%
+  summarise_all(mean)
 
+#pull only needed values
+rgdpcap = subset(rgdpcap, select = c(date, value))
+
+#rename column names to be more easily interpreted
+colnames(rgdpcap) = c("Date", "Real GDP Per Capita")
+
+#Change date to quarters to keep consistent
+rgdpcap$Date = as.yearqtr(rgdpcap$Date,
+                      format = "%Y-%m-%d")
+
+#select only useful columns
+urate = subset(qurate, select = c(date, value))
+
+#rename column names to be more easily interpreted
+colnames(urate) = c("Date", "Unemployment Rate %")
+
+#pull only needed values
+mearn = subset(mearn, select = c(date, value))
+
+#rename column names to be more easily interpreted
+colnames(mearn) = c("Date", "Weekly Earnings")
+
+#Change date to quarters to keep consistent
+mearn$Date = as.yearqtr(mearn$Date,
+                          format = "%Y-%m-%d")
+
+#problem
+#RGDP and income are in different chained values
+#solution, divide both by the relative CPI value to readjust to same real dollar
+#average CPI in 2012 is 229.594
+#average CPI in 2020 is 258.811
+#average CPI in 1982-1984 dollars is 100
+
+#formula to use, (CPI in new chain year * real value)/CPI in old chain year
+#adjust both to 2020 dollars
+
+rgdpcap$`Real GDP Per Capita` = (rgdpcap$`Real GDP Per Capita`*258.811)/229.594
+
+mearn$`Weekly Earnings` = (mearn$`Weekly Earnings`*258.811)/100
+
+#now that those values are about correct
+#equalize length of data
+#keep only values past the date of the newest data series
+#keep only values before 2023 as mearn doesn't have 2023 data
+urate = urate %>% filter(urate$Date >= '1979 Q1')
+urate = urate %>% filter(urate$Date < '2023 Q1')
+
+#adjust rgdpcap
+rgdpcap = rgdpcap %>% filter(rgdpcap$Date >= '1979 Q1')
+
+#values are all now equalized
+
+#urate date neded up as not a date so fix that
+urate$Date = as.yearqtr(urate$Date, format = "%YQ%q")
+
+#visually demonstrate values
+plot(urate$Date , urate$`Unemployment Rate %`, type = "l", 
+     main = "US Unemployment Rate Over Time", xlab = "Year/Quarter", 
+     ylab = "Unemployment %", col = "blue")
+
+plot(rgdpcap$Date , rgdpcap$`Real GDP Per Capita` , type = "l", 
+     main = "US Real GDP Per Capita (2020 Dollars) ", xlab = "Year/Quarter", 
+     ylab = "Real GDP in $", col = "blue")
+
+plot(mearn$Date , mearn$`Weekly Earnings`, type = "l", 
+     main = "US Median Weekly Earnings (2020 Dollars", xlab = "Year/Quarter", 
+     ylab = "Weekly Earnings in $", col = "blue")
+
+```
+
+## Model and Hypothesis
+
+The model utilized will be a trivariate SVAR with the following specification
+
+*inc~t~* + α~1,2~gdp~t~ + α~1,3~uem~t~ = β~1,0~ + β~1,1~inc~t-1~ + β~1,2~gdp~t-1~ + β~1,3~uem~t-1~ + ... + β~1,10~inc~t-4~ + β~1,11~gdp~t-4~ + β~1,12~uem~t-4~ + μ~inct~
+
+*α~2,1~inc~t~* + gdp~t~ + α~2,3~uem~t~ = β~2,0~ + β~2,1~inc~t-1~ + β~2,2~gdp~t-1~ + β~2,3~uem~t-1~ + ... + β~2,10~inc~t-4~ + β~2,11~gdp~t-4~ + β~2,12~uem~t-4~ + μ~gdpt~
+
+*α~3,1~inc~t~* + α~3,2~gdp~t~ + uem~t~ = β~3,0~ + β~3,1~inc~t-1~ + β~3,2~gdp~t-1~ + β~3,3~uem~t-1~ + ... + β~3,10~inc~t-4~ + β~3,11~gdp~t-4~ + β~3,12~uem~t-4~ + μ~uemt~
+
+Where inc is median income, gdp is GDP per capita, uem is unemployment
+
+α terms are present to indicate present relationships between the variables
+
+β~1,0~ β~2,0~ β~3,0~ are each intercept terms
+
+all other β terms are a multiplier on the value of prior period values on the present
+
+... indicates that the variables in question follow a repeating pattern, in this case lags from 1 to 4 periods
+
+μ is an error term
+
+t subscripts indicate the time period relative to the present. E.g. t-1 indicates the value of the variable one period in the past.
+
+I would also like to in my final report include a control variable for COVID as COVID doubtless impacted the economy in a way unrelated to any other changes.
+
+This model goes to four lags as the data is quarterly and this ensures that seasonality effects are removed. The model will serve to identify the effects of shocks on the US economy stemming from stimulus payments as stimulus payments may be treated as one period shocks to income and the impulse response function will tell us the effects that such payments have on the economy.
+
+Estimating the effects of increased unemployment benefits is more difficult but can be achieved by treating these as a wage floor as presumably if one would be paid less than unemployment benefits one will choose not to work except as necessary to maintain benefits. Thus median income can be replaced with minimum wage in the above calculation and high levels of unemployment benefits treated as an effective increase in the minimum wage. As an alternative, the effects of a universal basic income program may be estimated as a permanent increase in income to all members of society regardless of their employment status.
+
+These are all relevant to the economic situation in the United States going forward. A combination of stagnating wages, low minimum wage, and increasing income inequality threatens to force more forceful government action to avert economic crisis stemming from a lower-class which no longer lives at a subsistence level. While this state has not yet been reached it is a looming threat which must be addressed. The number of government programs to help low income individuals is immense but oftentimes much time and energy is spent ensuring that the "undeserving" are not given these benefits which can lead to those in need being rejected or ending up in worse circumstances due to long delays in receiving assistance. All of the proposed methods due to their weak targeting requirements would provide relief more rapidly and potentially aid in economic growth more than programs targeted at covering expenses related to a specific aspect of life.
 
 ## References {.unnumbered}
