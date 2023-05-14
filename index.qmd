@@ -39,6 +39,9 @@ GDP per capita is selected as it accounts for fluctuations in population over ti
 Unemployment is utilized at it is of paramount concern in either confirming or assuaging concerns that, with relatively less incentive to work, that a portion of the population will elect not to work.
 
 ```{r}
+#| message: false
+#| warning: false
+
 #load requisite packages
 library(fredr)
 library(zoo)
