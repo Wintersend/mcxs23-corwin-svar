@@ -134,6 +134,19 @@ plot(mearn$Date , mearn$`Weekly Earnings`, type = "l",
 
 ```
 
+## Preliminary data analysis
+
+```{r}
+urate[,2]
+
+FinTS::Acf(urate[,2]) # autocorrelogram analysis
+tseries::adf.test(as.vector(urate$`Unemployment Rate %`), k = 4) # unit-root testing
+tseries::adf.test(diff(as.vector(urate$`Unemployment Rate %`)), k = 3) # ur testing repeated for the first differences to determine the integration order of the variable 
+
+```
+
+
+
 ## Model and Hypothesis
 
 The model utilized will be a trivariate SVAR with the following specification
