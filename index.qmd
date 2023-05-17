@@ -59,8 +59,6 @@ urate = fredr(series_id = "UNRATE")
 mearn = fredr(series_id = "LES1252881600Q")
 
 
-1- rejectionRate(as.mcmc(theta[,1]))
-
 #keep only unemployment rate and date to avoid errors
 urate = subset(urate, select = c(date, value))
 
