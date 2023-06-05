@@ -90,10 +90,10 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a>
   <ul class="collapse">
-  <li><a href="#objective-and-motivation" id="toc-objective-and-motivation" class="nav-link" data-scroll-target="#objective-and-motivation">Objective and Motivation</a></li>
+  <li><a href="#objective-and-motivation-forcing-an-update-delete-after" id="toc-objective-and-motivation-forcing-an-update-delete-after" class="nav-link" data-scroll-target="#objective-and-motivation-forcing-an-update-delete-after">Objective and Motivation FORCING AN UPDATE DELETE AFTER</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#preliminary-data-analysis" id="toc-preliminary-data-analysis" class="nav-link" data-scroll-target="#preliminary-data-analysis">Preliminary data analysis</a></li>
-  <li><a href="#model-and-hypothesis" id="toc-model-and-hypothesis" class="nav-link" data-scroll-target="#model-and-hypothesis">Model and Hypothesis</a></li>
+  <li><a href="#preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" id="toc-preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" class="nav-link" data-scroll-target="#preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately">Preliminary data analysis THE ABOVE NEEDS TO BE BROUGHT INTO THIS AND SPACE APPROPRIATELY</a></li>
+  <li><a href="#model-and-hypothesis-this-section-is-next-to-be-updated" id="toc-model-and-hypothesis-this-section-is-next-to-be-updated" class="nav-link" data-scroll-target="#model-and-hypothesis-this-section-is-next-to-be-updated">Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul></li>
   </ul>
@@ -131,9 +131,9 @@ ul.task-list li input[type="checkbox"] {
 </blockquote>
 <section id="section" class="level1">
 <h1></h1>
-<section id="objective-and-motivation" class="level2">
-<h2 class="anchored" data-anchor-id="objective-and-motivation">Objective and Motivation</h2>
-<p>The goal of this research projectis to analyze the impact of unconditional government stipends on the U.S. economy, such as stimulus checks. To identify these effects I will analyze the effects of the stimulus checks and increased unemployment benefits issued by the US government in the wake of the COVID-19 pandemic.</p>
+<section id="objective-and-motivation-forcing-an-update-delete-after" class="level2">
+<h2 class="anchored" data-anchor-id="objective-and-motivation-forcing-an-update-delete-after">Objective and Motivation FORCING AN UPDATE DELETE AFTER</h2>
+<p>The goal of this research project is to analyze the impact of unconditional government stipends on the U.S. economy, such as stimulus checks. To identify these effects I will analyze the effects of the stimulus checks and increased unemployment benefits issued by the US government in the wake of the COVID-19 pandemic.</p>
 <p>This is an important topic as inequality rises direct government action may become increasingly necessary. Increased taxation on the rich and targeted government programs can only do so much to help those at the lower and middle ends of income. Especially as the groups in need of help become larger and their needs more diverse, the high administrative costs of judging who gets the benefits and what they are applicable to may become untenable. In this case, regular stimulus payments or higher unemployment benefits may become necessary to the continued economic health of the country. However, without knowing the effects of these methods, it is difficult to say whether or not they would do more harm than good.</p>
 </section>
 <section id="data" class="level2">
@@ -327,12 +327,16 @@ alternative hypothesis: stationary</code></pre>
 </div>
 </div>
 </section>
-<section id="preliminary-data-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="preliminary-data-analysis">Preliminary data analysis</h2>
+<section id="preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" class="level2">
+<h2 class="anchored" data-anchor-id="preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately">Preliminary data analysis THE ABOVE NEEDS TO BE BROUGHT INTO THIS AND SPACE APPROPRIATELY</h2>
+<p>All of the variables of interest show a gradually decaying ACF and essentially no significant PACF. This is consistent with variables that have a strong dependence on prior observed values and no significant dependence on the error of the prior observations. This indicates that an AR model is indeed useful for predicting the behavior of these variables.</p>
+<p>The ADF tests indicate that all of the processes are unit root non-stationary. This is consistent with expectations as all of the variables visually exhibit a strong upward trend. Unemployment rate being non-stationary is something of a surprise, but it has the smallest p-value at 0.1337. On visual inspection it can be seen that, barring the COVID shock, unemployment rate has been cyclical but downward trending.</p>
+<p>As can be seen above, many of the series are reasonably static over time except for the beginning of the COVID-19 pandemic. This sudden, dramatic change can skew data, especially given the relatively small number of observations amplifying the effects of any outliers. As a result a simple SVAR may not return accurate results due to attributing too much weight to COVID shocks since SVAR models have difficulty accounting for exogenous shocks.</p>
+<p>To compensate for this the variance spike during the early periods of COVID will need to be accounted for.</p>
 </section>
-<section id="model-and-hypothesis" class="level2">
-<h2 class="anchored" data-anchor-id="model-and-hypothesis">Model and Hypothesis</h2>
-<p>The model utilized will be a trivariate SVAR with the following specification</p>
+<section id="model-and-hypothesis-this-section-is-next-to-be-updated" class="level2">
+<h2 class="anchored" data-anchor-id="model-and-hypothesis-this-section-is-next-to-be-updated">Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED</h2>
+<p>The model utilized will be a six variables SVAR with the following specification</p>
 <p><em>inc<sub>t</sub></em> + α<sub>1,2</sub>gdp<sub>t</sub> + α<sub>1,3</sub>uem<sub>t</sub> = β<sub>1,0</sub> + β<sub>1,1</sub>inc<sub>t-1</sub> + β<sub>1,2</sub>gdp<sub>t-1</sub> + β<sub>1,3</sub>uem<sub>t-1</sub> + … + β<sub>1,10</sub>inc<sub>t-4</sub> + β<sub>1,11</sub>gdp<sub>t-4</sub> + β<sub>1,12</sub>uem<sub>t-4</sub> + μ<sub>inct</sub></p>
 <p><em>α<sub>2,1</sub>inc<sub>t</sub></em> + gdp<sub>t</sub> + α<sub>2,3</sub>uem<sub>t</sub> = β<sub>2,0</sub> + β<sub>2,1</sub>inc<sub>t-1</sub> + β<sub>2,2</sub>gdp<sub>t-1</sub> + β<sub>2,3</sub>uem<sub>t-1</sub> + … + β<sub>2,10</sub>inc<sub>t-4</sub> + β<sub>2,11</sub>gdp<sub>t-4</sub> + β<sub>2,12</sub>uem<sub>t-4</sub> + μ<sub>gdpt</sub></p>
 <p><em>α<sub>3,1</sub>inc<sub>t</sub></em> + α<sub>3,2</sub>gdp<sub>t</sub> + uem<sub>t</sub> = β<sub>3,0</sub> + β<sub>3,1</sub>inc<sub>t-1</sub> + β<sub>3,2</sub>gdp<sub>t-1</sub> + β<sub>3,3</sub>uem<sub>t-1</sub> + … + β<sub>3,10</sub>inc<sub>t-4</sub> + β<sub>3,11</sub>gdp<sub>t-4</sub> + β<sub>3,12</sub>uem<sub>t-4</sub> + μ<sub>uemt</sub></p>
@@ -445,7 +449,8 @@ The following is largely taken from Ray's code and provided with consent.
 <p>As can be seen, when weekly earnings is shocked, it tends to cause a shock in the opposite direction in the next period, followed by a small increase, and then stabilizing such that by the end of the second year an income shock creates no further changes in the economy. Curiously, unemployment rate also falls and RGDP experiences a spike before returning to no continuing effect. M2 Money Supply is decreased and suffers from a decreased future growth as well.</p>
 <p>CPI and Government Expenditure show no significant effects in this model.</p>
 <p>One possible explanation for these changes seeming contradictory to initial assumptions is the holiday worker rush and holiday bonuses interacting with the data. This seasonality should be controlled for by the lag order but I can think of no other viable explanation. In the United States, there is a significant upsurge in employment during the time right around Christmas in December, both in the lead up and during Christmas. During this time is also when many bonuses are paid to workers. And an upsurge in employment is consistent with a spike in RGDP per capita.</p>
-<p>Further analysis is needed as I am unclear why these results are occuring in what should be the absence of seasonality and sign restrictions.</p>
+<p>Another possible reason is the volatility spike from COVID completely subsuming all other effects so that the real effects cannot be observed.</p>
+<p>Further analysis is needed as I am unclear why these results are occurring in what should be the absence of seasonality and sign restrictions. To test this I will create a second set of Impulse Response Functions including only pre-COVID effects. This will also help me tell what form I expect my IRFs to take after adjusting for COVID</p>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
