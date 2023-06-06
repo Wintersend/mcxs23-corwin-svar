@@ -60,6 +60,7 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -94,6 +95,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
   <li><a href="#preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" id="toc-preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" class="nav-link" data-scroll-target="#preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately">Preliminary data analysis THE ABOVE NEEDS TO BE BROUGHT INTO THIS AND SPACE APPROPRIATELY</a></li>
   <li><a href="#model-and-hypothesis-this-section-is-next-to-be-updated" id="toc-model-and-hypothesis-this-section-is-next-to-be-updated" class="nav-link" data-scroll-target="#model-and-hypothesis-this-section-is-next-to-be-updated">Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul></li>
   </ul>
@@ -337,29 +339,27 @@ alternative hypothesis: stationary</code></pre>
 <section id="model-and-hypothesis-this-section-is-next-to-be-updated" class="level2">
 <h2 class="anchored" data-anchor-id="model-and-hypothesis-this-section-is-next-to-be-updated">Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED</h2>
 <p>The model utilized will be a six variables SVAR with the following specification</p>
-<p><em>inc<sub>t</sub></em> + α<sub>1,2</sub>gdp<sub>t</sub> + α<sub>1,3</sub>uem<sub>t</sub> = β<sub>1,0</sub> + β<sub>1,1</sub>inc<sub>t-1</sub> + β<sub>1,2</sub>gdp<sub>t-1</sub> + β<sub>1,3</sub>uem<sub>t-1</sub> + … + β<sub>1,10</sub>inc<sub>t-4</sub> + β<sub>1,11</sub>gdp<sub>t-4</sub> + β<sub>1,12</sub>uem<sub>t-4</sub> + μ<sub>inct</sub></p>
-<p><em>α<sub>2,1</sub>inc<sub>t</sub></em> + gdp<sub>t</sub> + α<sub>2,3</sub>uem<sub>t</sub> = β<sub>2,0</sub> + β<sub>2,1</sub>inc<sub>t-1</sub> + β<sub>2,2</sub>gdp<sub>t-1</sub> + β<sub>2,3</sub>uem<sub>t-1</sub> + … + β<sub>2,10</sub>inc<sub>t-4</sub> + β<sub>2,11</sub>gdp<sub>t-4</sub> + β<sub>2,12</sub>uem<sub>t-4</sub> + μ<sub>gdpt</sub></p>
-<p><em>α<sub>3,1</sub>inc<sub>t</sub></em> + α<sub>3,2</sub>gdp<sub>t</sub> + uem<sub>t</sub> = β<sub>3,0</sub> + β<sub>3,1</sub>inc<sub>t-1</sub> + β<sub>3,2</sub>gdp<sub>t-1</sub> + β<sub>3,3</sub>uem<sub>t-1</sub> + … + β<sub>3,10</sub>inc<sub>t-4</sub> + β<sub>3,11</sub>gdp<sub>t-4</sub> + β<sub>3,12</sub>uem<sub>t-4</sub> + μ<sub>uemt</sub></p>
-<p>Where inc is median income, gdp is GDP per capita, uem is unemployment</p>
-<p>α terms are present to indicate present relationships between the variables</p>
-<p>β<sub>1,0</sub> β<sub>2,0</sub> β<sub>3,0</sub> are each intercept terms</p>
-<p>all other β terms are a multiplier on the value of prior period values on the present</p>
-<p>… indicates that the variables in question follow a repeating pattern, in this case lags from 1 to 4 periods</p>
-<p>μ is an error term</p>
+<p><span class="math display">\[Y = XA + U\]</span> <span class="math display">\[U|X \sim i.i.d. MN_{TxN}(0,\Sigma,\Omega)\]</span></p>
+<p><span class="math display">\[y_t = \begin{bmatrix}
+  mearn_t &amp; =Mean Earnings\\
+  urate_t &amp; =Unemployment Rate\\
+  rgdpcap_t &amp; =Real GDP Per Capita\\
+  CPI_t &amp; =Consumer Price Index\\
+  govex_t &amp; =Government Consumption Expenditure\\
+  M2_t &amp; =M2 Money Supply
+\end{bmatrix}\]</span></p>
+<p>In this model four lags are utilized, bringing the final relationship to</p>
+<p><span class="math display">\[y_t = y_{t-1}A_1 + y_{t-2}A_2 + y_{t-3}A_3 + y_{t-4}A_4 + U_t\]</span></p>
 <p>t subscripts indicate the time period relative to the present. E.g. t-1 indicates the value of the variable one period in the past.</p>
-<p>I would also like to in my final report include a control variable for COVID as COVID doubtless impacted the economy in a way unrelated to any other changes.</p>
 <p>This model goes to four lags as the data is quarterly and this ensures that seasonality effects are removed. The model will serve to identify the effects of shocks on the US economy stemming from stimulus payments as stimulus payments may be treated as one period shocks to income and the impulse response function will tell us the effects that such payments have on the economy.</p>
 <p>Estimating the effects of increased unemployment benefits is more difficult but can be achieved by treating these as a wage floor as presumably if one would be paid less than unemployment benefits one will choose not to work except as necessary to maintain benefits. Thus median income can be replaced with minimum wage in the above calculation and high levels of unemployment benefits treated as an effective increase in the minimum wage. As an alternative, the effects of a universal basic income program may be estimated as a permanent increase in income to all members of society regardless of their employment status.</p>
 <p>These are all relevant to the economic situation in the United States going forward. A combination of stagnating wages, low minimum wage, and increasing income inequality threatens to force more forceful government action to avert economic crisis stemming from a lower-class which no longer lives at a subsistence level. While this state has not yet been reached it is a looming threat which must be addressed. The number of government programs to help low income individuals is immense but oftentimes much time and energy is spent ensuring that the “undeserving” are not given these benefits which can lead to those in need being rejected or ending up in worse circumstances due to long delays in receiving assistance. All of the proposed methods due to their weak targeting requirements would provide relief more rapidly and potentially aid in economic growth more than programs targeted at covering expenses related to a specific aspect of life.</p>
-<p>#THIS IS TEMPORARILY COMMENTED OUT, ADD ANOTHER ` BELOW TO RETURN TO CODE ``{r}</p>
+<p>#THIS IS TEMPORARILY COMMENTED OUT, ADD ANOTHER <code>BELOW TO RETURN TO CODE REMOVE</code> to render ``{r}</p>
 <p>#Attempt at microcosm programming for the sake of later inclusion #in the overall model</p>
 <p>#first need to identify st1, st2, st3 #cannot take as given #need to calculate additional terms #Beta is given by A.bar</p>
 <p>#Does gamma come in anywhere under a different name? #Lecture slides use S and ν for IW values as well as M, Σ, P #Paper uses ψ and d for IW values as well as b, Σ, Ω</p>
 <p>#Directions to derive St seem unclear #Theta is (s1, s2, s3, rho) #is it just p(gamma, theta|y) #But how is p(y|gamma, theta) derived? #IT seems to depend on already having st #Does it mean the prior of st?</p>
 <p>#set new yt based on given st #curent y lacks date #rebind date to verify #There must be a better way to select the appropriate dates #I just don’t know offhand</p>
-<p>#install.packages(‘MASS’) library(MASS)</p>
-<p>#install.packages(‘distributionsrd’) library(distributionsrd)</p>
-<p>#install.packages(‘arrayhelpers’) library(arrayhelpers)</p>
 <p>#set up for Metropolis-Hastings S = 1000</p>
 <p>#create c and w for covariance c = 0.0001 W = diag(4) p=4 #create empty variables for accepted and iteration count accept = 0 itter = 1</p>
 <p>omegaS = rep(0, 4) omegaco = c*W</p>
@@ -407,7 +407,7 @@ t = t + 1  </code></pre>
 <p>#try for loop version for (i in 1:S) { #prior density rhostar = dnorm(0,0.5) s = dpareto()</p>
 <p>#candidate generating density omegastar = mvrnorm(1, omegaS, omegaco)</p>
 <p>pomega = det(diag(s)) ^ /2 * #p(omega) Ask prof about this, I can’t quite read handwriting u = runif(0,1) alphaS = min(pomega,1)</p>
-<p>if (u &lt; alpahaS){ omegaS = omegastar #save kernal of omegaS accept = accept + 1 } else { omegaS = omegaS #save kernal of omegaS } itteration = itteration + 1 }</p>
+<p>if (u &lt; alpahaS){ omegaS = omegastar #save kernal of omegaS accept = accept + 1 } else { omegaS = omegaS #save kernal of omegaS } itteration = itteration + 1</p>
 <p>#calculate rejection rate rrate = 1 - accept/itteration</p>
 <p>#do I actually need this or can I hand-calc it above? coda::rejectionRate()</p>
 <p>rho = rnorm(mean = 0, sd = 0.5)</p>
@@ -419,38 +419,31 @@ t = t + 1  </code></pre>
 <p>#generate Xt</p>
 <p>#set new Xt based on given st</p>
 <p>#regenerate Beta and Sigma using MLE of new values A.hat = solve(t(X)%<em>%sdia%</em>%X)%<em>%t(X)%</em>%sdia%<em>%Y Sigma.hat = t(Y-X%</em>%A.hat)%<em>%(Y-X%</em>%A.hat)/nrow(Y)</p>
-<p>#This is all just given and can be reused infinitely V.bar.inv = t(X)%<em>%diag(1/s)%</em>%X + diag(1/diag(V.prior)) V.bar = solve(V.bar.inv) A.bar = V.bar%<em>%(t(X)%</em>%diag(1/s)%<em>%Y + diag(1/diag(V.prior))%</em>%A.prior) nu.bar = nrow(Y) + nu.prior S.bar = S.prior + t(Y)%<em>%diag(1/s)%</em>%Y + t(A.prior)%<em>%diag(1/diag(V.prior))%</em>%A.prior - t(A.bar)%<em>%V.bar.inv%</em>%A.bar S.bar.inv = solve(S.bar)</p>
-<pre><code>
-```{}
-::: {.cell}
-
-:::
-
-The following is largely taken from Ray's code and provided with consent.
-
-
-::: {.cell}
-::: {.cell-output .cell-output-stdout}</code></pre>
-<p>================================================================================</p>
-<pre><code>:::
-
-::: {.cell-output .cell-output-stdout}</code></pre>
-<pre><code>  [,1] [,2]   [,3] [,4] [,5]   [,6]</code></pre>
-<p>[1,] 15.2 1.4 -392.4 -0.2 36.1 241.2 [2,] -0.3 0.0 7.1 0.0 0.3 -0.3 [3,] -7.3 -0.1 838.9 0.1 -8.4 -229.4 [4,] 0.0 0.0 0.9 0.0 0.0 -0.3 [5,] 1.1 0.3 -205.4 0.3 4.2 60.0 [6,] 0.0 0.0 -3.8 0.0 -0.1 0.2 [7,] 0.0 0.0 0.5 0.0 0.0 0.6 [8,] 0.2 0.0 -0.6 0.0 -0.1 -0.1 [9,] 4.0 0.8 -552.2 -0.1 2.3 217.6 [10,] 0.0 0.0 0.5 0.0 0.0 -0.1 [11,] -4.6 -0.7 411.1 0.4 -9.6 -134.9 [12,] 0.0 0.0 -0.4 0.0 0.2 -0.3 [13,] 0.0 0.0 0.7 0.0 0.0 -0.2 [14,] 0.0 0.0 -1.2 0.0 -0.4 -2.2 [15,] 2.0 0.4 -333.6 0.0 2.9 52.4 [16,] 0.0 0.0 0.0 0.0 0.0 0.1 [17,] -2.0 0.0 -8.4 0.3 -0.1 -19.5 [18,] -0.1 0.0 -1.3 0.0 0.1 -0.2 [19,] 0.0 0.0 0.0 0.0 0.0 0.3 [20,] -0.1 0.0 8.5 0.0 0.0 -0.7 [21,] 0.1 -0.2 74.4 0.0 -1.5 -49.9 [22,] 0.0 0.0 0.0 0.0 0.0 -0.1 [23,] 3.0 0.2 -97.4 0.0 8.3 30.4 [24,] 0.1 0.0 -2.1 0.0 0.2 -0.3 [25,] 0.0 0.0 -0.3 0.0 0.0 -0.1</p>
-<pre><code>:::
-
-::: {.cell-output .cell-output-stdout}</code></pre>
-<p>================================================================================ ``` :::</p>
+<p>#This is all just given and can be reused infinitely V.bar.inv = t(X)%<em>%diag(1/s)%</em>%X + diag(1/diag(V.prior)) V.bar = solve(V.bar.inv) A.bar = V.bar%<em>%(t(X)%</em>%diag(1/s)%<em>%Y + diag(1/diag(V.prior))%</em>%A.prior) nu.bar = nrow(Y) + nu.prior S.bar = S.prior + t(Y)%<em>%diag(1/s)%</em>%Y + t(A.prior)%<em>%diag(1/diag(V.prior))%</em>%A.prior - t(A.bar)%<em>%V.bar.inv%</em>%A.bar S.bar.inv = solve(S.bar) ```</p>
+<p>```{} ::: {.cell}</p>
+<p>:::</p>
+<p>The following is largely taken from Ray’s code and provided with consent.</p>
+<div class="cell">
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>:::</p>
-<p>##Analysis</p>
+</div>
+</section>
+<section id="analysis" class="level2">
+<h2 class="anchored" data-anchor-id="analysis">Analysis</h2>
 <p>As can be seen, when weekly earnings is shocked, it tends to cause a shock in the opposite direction in the next period, followed by a small increase, and then stabilizing such that by the end of the second year an income shock creates no further changes in the economy. Curiously, unemployment rate also falls and RGDP experiences a spike before returning to no continuing effect. M2 Money Supply is decreased and suffers from a decreased future growth as well.</p>
 <p>CPI and Government Expenditure show no significant effects in this model.</p>
 <p>One possible explanation for these changes seeming contradictory to initial assumptions is the holiday worker rush and holiday bonuses interacting with the data. This seasonality should be controlled for by the lag order but I can think of no other viable explanation. In the United States, there is a significant upsurge in employment during the time right around Christmas in December, both in the lead up and during Christmas. During this time is also when many bonuses are paid to workers. And an upsurge in employment is consistent with a spike in RGDP per capita.</p>
 <p>Another possible reason is the volatility spike from COVID completely subsuming all other effects so that the real effects cannot be observed.</p>
-<p>Further analysis is needed as I am unclear why these results are occurring in what should be the absence of seasonality and sign restrictions. To test this I will create a second set of Impulse Response Functions including only pre-COVID effects. This will also help me tell what form I expect my IRFs to take after adjusting for COVID</p>
+<p>Further analysis is needed as I am unclear why these results are occurring in what should be the absence of seasonality and sign restrictions. To test this I will create a second set of Impulse Response Functions including only pre-COVID effects. This will also help me tell what form I expect my IRFs to take after adjusting for COVID.</p>
+<p>IRFS using only pre 2020 data</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>By removing the post-COVID data it can be seen that the shock to earnings results in a very different pattern. This is consistent with the belief that the large COVID shock has a distortionary effect on all estimations. In this case a shock to weekly earnings results in only a very small effect moving forward, as well as a small decrease in the unemployment rate which adjusts over time but never returns to no change. RGDP per capita shows a similar response regardless of if COVID data is included or not, the main difference is that it does not exhibit a large counter-shock at any point. CPI appear uninfluenced by Weekly Earnings, as does Government Spending. M2 money supply exhibits a downward shift, but to a much lesser extent than the previous model.</p>
+<p>Moving forward into the next model, COVID-19 data will be included but it will be treated as a shock to variance. This ideally allows for the most accurate model yet as it uses the full data set but does not suffer from large distortionary effects.</p>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>

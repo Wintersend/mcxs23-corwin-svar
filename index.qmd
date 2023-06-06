@@ -279,6 +279,10 @@ tseries::adf.test(diff(as.vector(M2$`M2 Money Supply`), k = 3))
 First differences values are shown below.
 
 ```{r}
+
+#| code-fold: true
+#| code-summary: "Show code"
+
 #Take first differences
 #It's making me select an end point if I want to use not all of column 1
 n = nrow(mearn)
@@ -346,27 +350,24 @@ To compensate for this the variance spike during the early periods of COVID will
 
 The model utilized will be a six variables SVAR with the following specification
 
-*inc~t~* + α~1,2~gdp~t~ + α~1,3~uem~t~ = β~1,0~ + β~1,1~inc~t-1~ + β~1,2~gdp~t-1~ + β~1,3~uem~t-1~ + ... + β~1,10~inc~t-4~ + β~1,11~gdp~t-4~ + β~1,12~uem~t-4~ + μ~inct~
+$$Y = XA + U$$
+$$U|X \sim i.i.d. MN_{TxN}(0,\Sigma,\Omega)$$
 
-*α~2,1~inc~t~* + gdp~t~ + α~2,3~uem~t~ = β~2,0~ + β~2,1~inc~t-1~ + β~2,2~gdp~t-1~ + β~2,3~uem~t-1~ + ... + β~2,10~inc~t-4~ + β~2,11~gdp~t-4~ + β~2,12~uem~t-4~ + μ~gdpt~
+$$y_t = \begin{bmatrix}
+  mearn_t & =Mean Earnings\\
+  urate_t & =Unemployment Rate\\
+  rgdpcap_t & =Real GDP Per Capita\\
+  CPI_t & =Consumer Price Index\\
+  govex_t & =Government Consumption Expenditure\\
+  M2_t & =M2 Money Supply
+\end{bmatrix}$$
 
-*α~3,1~inc~t~* + α~3,2~gdp~t~ + uem~t~ = β~3,0~ + β~3,1~inc~t-1~ + β~3,2~gdp~t-1~ + β~3,3~uem~t-1~ + ... + β~3,10~inc~t-4~ + β~3,11~gdp~t-4~ + β~3,12~uem~t-4~ + μ~uemt~
+In this model four lags are utilized, bringing the final relationship to
 
-Where inc is median income, gdp is GDP per capita, uem is unemployment
+$$y_t = y_{t-1}A_1 + y_{t-2}A_2 + y_{t-3}A_3 + y_{t-4}A_4 + U_t$$
 
-α terms are present to indicate present relationships between the variables
-
-β~1,0~ β~2,0~ β~3,0~ are each intercept terms
-
-all other β terms are a multiplier on the value of prior period values on the present
-
-... indicates that the variables in question follow a repeating pattern, in this case lags from 1 to 4 periods
-
-μ is an error term
 
 t subscripts indicate the time period relative to the present. E.g. t-1 indicates the value of the variable one period in the past.
-
-I would also like to in my final report include a control variable for COVID as COVID doubtless impacted the economy in a way unrelated to any other changes.
 
 This model goes to four lags as the data is quarterly and this ensures that seasonality effects are removed. The model will serve to identify the effects of shocks on the US economy stemming from stimulus payments as stimulus payments may be treated as one period shocks to income and the impulse response function will tell us the effects that such payments have on the economy.
 
@@ -374,7 +375,7 @@ Estimating the effects of increased unemployment benefits is more difficult but 
 
 These are all relevant to the economic situation in the United States going forward. A combination of stagnating wages, low minimum wage, and increasing income inequality threatens to force more forceful government action to avert economic crisis stemming from a lower-class which no longer lives at a subsistence level. While this state has not yet been reached it is a looming threat which must be addressed. The number of government programs to help low income individuals is immense but oftentimes much time and energy is spent ensuring that the "undeserving" are not given these benefits which can lead to those in need being rejected or ending up in worse circumstances due to long delays in receiving assistance. All of the proposed methods due to their weak targeting requirements would provide relief more rapidly and potentially aid in economic growth more than programs targeted at covering expenses related to a specific aspect of life.
 
-#THIS IS TEMPORARILY COMMENTED OUT, ADD ANOTHER ` BELOW TO RETURN TO CODE
+#THIS IS TEMPORARILY COMMENTED OUT, ADD ANOTHER ` BELOW TO RETURN TO CODE REMOVE ` to render
 ``{r}
 
 #Attempt at microcosm programming for the sake of later inclusion
@@ -402,14 +403,7 @@ These are all relevant to the economic situation in the United States going forw
 #There must be a better way to select the appropriate dates
 #I just don't know offhand
 
-#install.packages('MASS')
-library(MASS)
 
-#install.packages('distributionsrd')
-library(distributionsrd)
-
-#install.packages('arrayhelpers')
-library(arrayhelpers)
 
 #set up for Metropolis-Hastings
 S = 1000
@@ -542,7 +536,7 @@ for (i in 1:S) {
       #save kernal of omegaS
   }
   itteration = itteration + 1
-}
+
   
 #calculate rejection rate
 rrate = 1 - accept/itteration
@@ -611,10 +605,10 @@ S.bar.inv   = solve(S.bar)
 ```
 
 ```{}
-```{r}
+```{r, echo=FALSE, message=FALSE, results='hide',fig.keep='all'}
 #| code-fold: true
 #| code-summary: "Show code"
-
+#| message: false
 
 #I hope this code works
 
@@ -659,8 +653,8 @@ y = as.matrix(y)
 n = nrow(y)
 #To ensure consistency later in setting Sign Restrictions
 #y has variables in the following order
-#Unemployment Rate
 #Mean Earnings
+#Unemployment Rate
 #Real GDP Per Capita
 #Consumer Price Index
 #Real Government Consumption Expenditure
@@ -790,11 +784,11 @@ Sigma         = S.bar
 
 The following is largely taken from Ray's code and provided with consent.
 
-```{r}
+```{r, echo=FALSE, message=FALSE, results='hide',fig.keep='all'}
 
 #| code-fold: true
 #| code-summary: "Show code"
-
+#| message: false
 # data = input data should be quarterly
 # p = lags
 # S = number of posterior draws
@@ -1028,7 +1022,7 @@ for (n in 1:N){
 }
 ```
 
-##Analysis
+## Analysis
 
 As can be seen, when weekly earnings is shocked, it tends to cause a shock in the opposite direction in the next period, followed by a small increase, and then stabilizing such that by the end of the second year an income shock creates no further changes in the economy. Curiously, unemployment rate also falls and RGDP experiences a spike before returning to no continuing effect. M2 Money Supply is decreased and suffers from a decreased future growth as well.
 
@@ -1038,6 +1032,145 @@ One possible explanation for these changes seeming contradictory to initial assu
 
 Another possible reason is the volatility spike from COVID completely subsuming all other effects so that the real effects cannot be observed. 
 
-Further analysis is needed as I am unclear why these results are occurring in what should be the absence of seasonality and sign restrictions. To test this I will create a second set of Impulse Response Functions including only pre-COVID effects. This will also help me tell what form I expect my IRFs to take after adjusting for COVID
+Further analysis is needed as I am unclear why these results are occurring in what should be the absence of seasonality and sign restrictions. To test this I will create a second set of Impulse Response Functions including only pre-COVID effects. This will also help me tell what form I expect my IRFs to take after adjusting for COVID.
+
+IRFS using only pre 2020 data
+
+```{r, echo=FALSE, message=FALSE, results='hide',fig.keep='all'}
+#| code-fold: true
+#| message: false
+urate = urate %>% filter(urate$Date >= '1979 Q2')
+urate = urate %>% filter(urate$Date < '2020 Q1')
+
+mearn = mearn %>% filter(mearn$Date >= '1979 Q2')
+mearn = mearn %>% filter(mearn$Date < '2020 Q1')
+
+rgdpcap = rgdpcap %>% filter(rgdpcap$Date >= '1979 Q2')
+rgdpcap = rgdpcap %>% filter(rgdpcap$Date < '2020 Q1')
+
+
+#CPI doesn't work, but if I change name and change back it works
+CPI2 = CPI
+
+CPI2 = CPI2 %>% filter(CPI2$Date >= '1979 Q2')
+CPI = CPI2 %>% filter(CPI2$Date < '2020 Q1')
+
+govex = govex %>% filter(govex$Date >= '1979 Q2')
+govex = govex %>% filter(govex$Date < '2020 Q1')
+
+M2 = M2 %>% filter(M2$Date >= '1979 Q2')
+M2 = M2 %>% filter(M2$Date < '2020 Q1')
+
+#set up y matrix
+#doing it like this so I can toggle stuff off and on
+y = cbind(mearn[,2], urate[,2])
+y = cbind(y, rgdpcap[,2])
+y = cbind(y, CPI[,2])
+y = cbind(y, govex[,2])
+y = cbind(y, M2[,2])
+
+
+#Need to set y as matrix or X becomes wrong object type for future calcs
+y = as.matrix(y)
+#use n for anywhere I need the length of the data
+#this allows for multiple forms of data to be used with varying end dates
+n = nrow(y)
+
+
+set.seed(69420)
+RW_res <-  sign.basic(y, p, S=1000, R1, k1 = 1, k2 = 100, shockvar = 1)
+round(RW_res$A.mean,1)
+
+basic.model = RW_res
+
+N <- dim(basic.model$A.posterior)[2]
+
+S <- dim(basic.model$A.posterior)[3]
+p <- 4
+h <- 12
+
+
+
+A.posterior.basic <- basic.model$A.posterior
+
+B0.posterior.basic <- basic.model$B0
+
+B.posterior.basic <- array(NA, c(N,N,S))
+
+for (s in 1:S){
+  B.posterior.basic[,,s] <- solve(B0.posterior.basic[,,s])
+}
+
+
+A.posterior <- A.posterior.basic
+B.posterior <- B.posterior.basic
+
+IRF.posterior     = array(NA,c(N,N,h+1,S))
+IRF.inf.posterior = array(NA,c(N,N,S))
+FEVD.posterior    = array(NA,c(N,N,h+1,S))
+J                 = cbind(diag(N),matrix(0,N,N*(p-1)))
+
+pb = txtProgressBar(min = 0, max = S, initial = 0) 
+
+for (s in 1:S){
+  setTxtProgressBar(pb,s)
+  A.bold          = rbind(t(A.posterior[2:(1+N*p),,s]),cbind(diag(N*(p-1)),matrix(0,N*(p-1),N)))
+  IRF.inf.posterior[,,s]          = J %*% solve(diag(N*p)-A.bold) %*% t(J) %*% B.posterior[,,s]
+  A.bold.power    = A.bold
+  for (i in 1:(h+1)){
+    if (i==1){
+      IRF.posterior[,,i,s]        = B.posterior[,,s]
+    } else {
+      IRF.posterior[,,i,s]        = J %*% A.bold.power %*% t(J) %*% B.posterior[,,s]
+      A.bold.power                = A.bold.power %*% A.bold
+    }
+    for (n in 1:N){
+      for (nn in 1:N){
+        FEVD.posterior[n,nn,i,s]  = sum(IRF.posterior[n,nn,1:i,s]^2)
+      }
+    }
+    FEVD.posterior[,,i,s]         = diag(1/apply(FEVD.posterior[,,i,s],1,sum))%*%FEVD.posterior[,,i,s]
+  }
+}
+FEVD.posterior    = 100*FEVD.posterior
+
+varname_vec <- c("Weekly Earnings", "Unemployment Rate", "Real GDP Per Capita", "CPI", "Government Spending", "M2 Money Supply")
+
+shock.var <- 1
+IRFs.k1           = apply(IRF.posterior[1:6,shock.var,,],1:2,mean)
+IRFs.inf.k1       = apply(IRF.inf.posterior[1:6,shock.var,],1,mean)
+rownames(IRFs.k1) = varname_vec
+
+IRFs.k1.hdi    = apply(IRF.posterior[1:6,shock.var,,],1:2,hdi, credMass=0.68)
+hh          = 1:(h+1)
+
+#This needs to look prettier
+#hmm. My graphs are not rendering correctly
+
+#pdf(file="irf-GFCF.pdf", height=9, width=12)
+par(mfrow=c(3,3), mar=c(3,3,2,2),cex.axis=1.5, cex.lab=1.5)
+for (n in 1:N){
+  ylims     = range(IRFs.k1[n,hh],IRFs.k1.hdi[,n,hh])
+  plot(hh,IRFs.k1[n,hh], type="l", ylim=ylims, axes=FALSE, xlab="3 years",
+       main=rownames(IRFs.k1)[n])
+  abline(h = 0, col = "firebrick")
+  if (n==N-1 | n==N){
+   # axis(1,c(1,2,5,9),c("","1 quarter","1 year","2 years"))
+  } else {
+    #axis(1,c(1,2,5,9),c("","","",""))
+  }
+  axis(2,c(ylims[1],0,ylims[2]),round(c(ylims[1],0,ylims[2]),3))
+  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col="#ccffff",border="salmon")
+  lines(hh, IRFs.k1[n,hh],lwd=2,col="red")
+}
+
+
+
+```
+
+By removing the post-COVID data it can be seen that the shock to earnings results in a very different pattern. This is consistent with the belief that the large COVID shock has a distortionary effect on all estimations. In this case a shock to weekly earnings results in only a very small effect moving forward, as well as a small decrease in the unemployment rate which adjusts over time but never returns to no change. RGDP per capita shows a similar response regardless of if COVID data is included or not, the main difference is that it does not exhibit a large counter-shock at any point. CPI appear uninfluenced by Weekly Earnings, as does Government Spending. M2 money supply exhibits a downward shift, but to a much lesser extent than the previous model.
+
+Moving forward into the next model, COVID-19 data will be included but it will be treated as a shock to variance. This ideally allows for the most accurate model yet as it uses the full data set but does not suffer from large distortionary effects.
 
 ## References {.unnumbered}
+
