@@ -93,7 +93,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#objective-and-motivation-forcing-an-update-delete-after" id="toc-objective-and-motivation-forcing-an-update-delete-after" class="nav-link" data-scroll-target="#objective-and-motivation-forcing-an-update-delete-after">Objective and Motivation FORCING AN UPDATE DELETE AFTER</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" id="toc-preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" class="nav-link" data-scroll-target="#preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately">Preliminary data analysis THE ABOVE NEEDS TO BE BROUGHT INTO THIS AND SPACE APPROPRIATELY</a></li>
+  <li><a href="#preliminary-data-analysis" id="toc-preliminary-data-analysis" class="nav-link" data-scroll-target="#preliminary-data-analysis">Preliminary Data Analysis</a></li>
   <li><a href="#model-and-hypothesis-this-section-is-next-to-be-updated" id="toc-model-and-hypothesis-this-section-is-next-to-be-updated" class="nav-link" data-scroll-target="#model-and-hypothesis-this-section-is-next-to-be-updated">Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED</a></li>
   <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -174,41 +174,51 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-1-6.png" class="img-fluid" width="672"></p>
 </div>
+</div>
+</section>
+<section id="preliminary-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="preliminary-data-analysis">Preliminary Data Analysis</h2>
+<div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-7.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-8.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-9.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-10.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-4.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-11.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-5.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-12.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-6.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-13.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-7.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-14.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-8.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-15.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-9.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-16.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-10.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-17.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-11.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-1-18.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-12.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -307,32 +317,29 @@ Dickey-Fuller = -5.6565, Lag order = 6, p-value = 0.01
 alternative hypothesis: stationary</code></pre>
 </div>
 </div>
-<p>First differences values are shown below.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-4.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-5.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-6.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately" class="level2">
-<h2 class="anchored" data-anchor-id="preliminary-data-analysis-the-above-needs-to-be-brought-into-this-and-space-appropriately">Preliminary data analysis THE ABOVE NEEDS TO BE BROUGHT INTO THIS AND SPACE APPROPRIATELY</h2>
 <p>All of the variables of interest show a gradually decaying ACF and essentially no significant PACF. This is consistent with variables that have a strong dependence on prior observed values and no significant dependence on the error of the prior observations. This indicates that an AR model is indeed useful for predicting the behavior of these variables.</p>
 <p>The ADF tests indicate that all of the processes are unit root non-stationary. This is consistent with expectations as all of the variables visually exhibit a strong upward trend. Unemployment rate being non-stationary is something of a surprise, but it has the smallest p-value at 0.1337. On visual inspection it can be seen that, barring the COVID shock, unemployment rate has been cyclical but downward trending.</p>
+<p>First Differences shown below.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-6.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 <p>As can be seen above, many of the series are reasonably static over time except for the beginning of the COVID-19 pandemic. This sudden, dramatic change can skew data, especially given the relatively small number of observations amplifying the effects of any outliers. As a result a simple SVAR may not return accurate results due to attributing too much weight to COVID shocks since SVAR models have difficulty accounting for exogenous shocks.</p>
 <p>To compensate for this the variance spike during the early periods of COVID will need to be accounted for.</p>
 </section>
@@ -340,7 +347,7 @@ alternative hypothesis: stationary</code></pre>
 <h2 class="anchored" data-anchor-id="model-and-hypothesis-this-section-is-next-to-be-updated">Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED</h2>
 <p>The model utilized will be a six variables SVAR with the following specification</p>
 <p><span class="math display">\[Y = XA + U\]</span> <span class="math display">\[U|X \sim i.i.d. MN_{TxN}(0,\Sigma,\Omega)\]</span></p>
-<p><span class="math display">\[y_t = \begin{bmatrix}
+<p><span class="math display">\[\bf{y}_t = \begin{bmatrix}
   mearn_t &amp; =Mean Earnings\\
   urate_t &amp; =Unemployment Rate\\
   rgdpcap_t &amp; =Real GDP Per Capita\\
@@ -349,83 +356,18 @@ alternative hypothesis: stationary</code></pre>
   M2_t &amp; =M2 Money Supply
 \end{bmatrix}\]</span></p>
 <p>In this model four lags are utilized, bringing the final relationship to</p>
-<p><span class="math display">\[y_t = y_{t-1}A_1 + y_{t-2}A_2 + y_{t-3}A_3 + y_{t-4}A_4 + U_t\]</span></p>
+<p><span class="math display">\[\bf{y}_t = \bf{y}_{t-1}\boldsymbol\alpha_1 + \bf{y}_{t-2}\boldsymbol\alpha_2 + \bf{y}_{t-3}\boldsymbol\alpha_3 + \bf{y}_{t-4}\boldsymbol\alpha_4 + U_t\]</span></p>
 <p>t subscripts indicate the time period relative to the present. E.g. t-1 indicates the value of the variable one period in the past.</p>
 <p>This model goes to four lags as the data is quarterly and this ensures that seasonality effects are removed. The model will serve to identify the effects of shocks on the US economy stemming from stimulus payments as stimulus payments may be treated as one period shocks to income and the impulse response function will tell us the effects that such payments have on the economy.</p>
 <p>Estimating the effects of increased unemployment benefits is more difficult but can be achieved by treating these as a wage floor as presumably if one would be paid less than unemployment benefits one will choose not to work except as necessary to maintain benefits. Thus median income can be replaced with minimum wage in the above calculation and high levels of unemployment benefits treated as an effective increase in the minimum wage. As an alternative, the effects of a universal basic income program may be estimated as a permanent increase in income to all members of society regardless of their employment status.</p>
 <p>These are all relevant to the economic situation in the United States going forward. A combination of stagnating wages, low minimum wage, and increasing income inequality threatens to force more forceful government action to avert economic crisis stemming from a lower-class which no longer lives at a subsistence level. While this state has not yet been reached it is a looming threat which must be addressed. The number of government programs to help low income individuals is immense but oftentimes much time and energy is spent ensuring that the “undeserving” are not given these benefits which can lead to those in need being rejected or ending up in worse circumstances due to long delays in receiving assistance. All of the proposed methods due to their weak targeting requirements would provide relief more rapidly and potentially aid in economic growth more than programs targeted at covering expenses related to a specific aspect of life.</p>
-<p>#THIS IS TEMPORARILY COMMENTED OUT, ADD ANOTHER <code>BELOW TO RETURN TO CODE REMOVE</code> to render ``{r}</p>
-<p>#Attempt at microcosm programming for the sake of later inclusion #in the overall model</p>
-<p>#first need to identify st1, st2, st3 #cannot take as given #need to calculate additional terms #Beta is given by A.bar</p>
-<p>#Does gamma come in anywhere under a different name? #Lecture slides use S and ν for IW values as well as M, Σ, P #Paper uses ψ and d for IW values as well as b, Σ, Ω</p>
-<p>#Directions to derive St seem unclear #Theta is (s1, s2, s3, rho) #is it just p(gamma, theta|y) #But how is p(y|gamma, theta) derived? #IT seems to depend on already having st #Does it mean the prior of st?</p>
-<p>#set new yt based on given st #curent y lacks date #rebind date to verify #There must be a better way to select the appropriate dates #I just don’t know offhand</p>
-<p>#set up for Metropolis-Hastings S = 1000</p>
-<p>#create c and w for covariance c = 0.0001 W = diag(4) p=4 #create empty variables for accepted and iteration count accept = 0 itter = 1</p>
-<p>omegaS = rep(0, 4) omegaco = c*W</p>
-<p>#is s just equal to omegastar</p>
-<p>#write separate function for posterior kernal #throw into for loop below for pomega</p>
-<p>#write function for evaluating st #generate theta vector from candidate generating density #use theta vector to generate st tildecalc()</p>
-<p>#run this later using an artificial s</p>
-<p>#Create function for generating p(y|Omega)</p>
-<p>#create function for generating tilde values #dataset, variance shift, lags</p>
-<p>#This is verified to work up until xtilde #must manually reset t for some reason tildecalc = function(){ #generate ytilde</p>
-<p>#get length of y obs = nrow(y)</p>
-<p>#Initialize matrix with all attributes of y to overwrite ytilde = y</p>
-<p>#set up for loop to recalculate each row of y #I am doing this because I do not recall if division of matrix by vector works #so better to do a manual method I know works for (i in 1:obs) {</p>
-<pre><code>ytilde[i,]=y[i,]/s[i]</code></pre>
-<p>} #save new ytilde for future, keep old one to calculate xtilde ytilde2 = ytilde[5:176,]</p>
-<p>#generate xtilde #create new length variable obsn = obs - p</p>
-<p>#initialize empty matrices</p>
-<p>xtildet = matrix(nrow = ncol(y),ncol = p+1)</p>
-<p>#xtilde is an array given that it is each set of xtildet xtilde = array(dim = c(ncol(y),p+1,obsn))</p>
-<p>xtildet[,1] = 1 #create t variable to track current timeperiod t = 1+p</p>
-<p>#populate xtilde for (i in 1:obsn){ xtildet[,1] = 1</p>
-<pre><code>#update xtildet for new period based on number of lags
-for (j in 1:p){
-  #Use loop count to select aprropriate rows of y
-  #lcount + p - j ensures rows populate in proper order
-  
-  #this returns out of bounds error because yes
-  #it seems like it doesn't properly reset t before checkingthis
-  #The code works if I manually reset t then run the loop
-  xtildet[,j+1] = t(y[t-j,])
-}
+<div class="cell">
 
-
-#perform math to make xtildet be correct
-xtildet = xtildet/s[p+i]
-#now fill in xtilde with the val
-
-xtilde[,,i] = xtildet
-#increment current time
-t = t + 1  </code></pre>
-<p>} #is transposing an array even necessary? It’s an array t = 1+p</p>
-<p>#Create a transpose of array xtilde xtildetrans = ta(xtilde)</p>
-<p>btildehat = (xtildetrans%<em>%xtilde + solve(omega)) %</em>% (xtildetrans%<em>%ytilde2 + solve(omega)%</em>%bhat)</p>
-<p>epsiltildehat = ytilde2 - xtilde%*%btildehat } #I need to find some</p>
-<p>#try for loop version for (i in 1:S) { #prior density rhostar = dnorm(0,0.5) s = dpareto()</p>
-<p>#candidate generating density omegastar = mvrnorm(1, omegaS, omegaco)</p>
-<p>pomega = det(diag(s)) ^ /2 * #p(omega) Ask prof about this, I can’t quite read handwriting u = runif(0,1) alphaS = min(pomega,1)</p>
-<p>if (u &lt; alpahaS){ omegaS = omegastar #save kernal of omegaS accept = accept + 1 } else { omegaS = omegaS #save kernal of omegaS } itteration = itteration + 1</p>
-<p>#calculate rejection rate rrate = 1 - accept/itteration</p>
-<p>#do I actually need this or can I hand-calc it above? coda::rejectionRate()</p>
-<p>rho = rnorm(mean = 0, sd = 0.5)</p>
-<p>s = rep(1,160)</p>
-<p>#initialize s’s s0 = 1 s1 = 2 s2 = 3 #initialize empty rho vector rhos = as.matrix(rep(0,9)) rhos[1,] #for loop to find all variances for (i in 1:9){ #can chage j-2 to just i since i is j-2 already #itterates through each time period to calculate new value based on s2 and rho rhos[i,] = 1 + (s2-1) * rho ^ i }</p>
-<p>#extend this to include all future values determined by rho s = c(s, s0, s1, s2, rhos) sdia = diag(s) #Check back later #may not need to actually use these. y = cbind(urate[,1], y) yt1 = y[165,2:7]/s1 yt2 = y[166,2:7]/s2 yt3 = y[167,2:7]/s3</p>
-<p>#reinsert these rows back into the original y matrix #only separate for verification purposes here to ensure math was done correctly #directly give correct output in final code</p>
-<p>#should be able to construct a for loop of some kind #try to do that later</p>
-<p>#generate Xt</p>
-<p>#set new Xt based on given st</p>
-<p>#regenerate Beta and Sigma using MLE of new values A.hat = solve(t(X)%<em>%sdia%</em>%X)%<em>%t(X)%</em>%sdia%<em>%Y Sigma.hat = t(Y-X%</em>%A.hat)%<em>%(Y-X%</em>%A.hat)/nrow(Y)</p>
-<p>#This is all just given and can be reused infinitely V.bar.inv = t(X)%<em>%diag(1/s)%</em>%X + diag(1/diag(V.prior)) V.bar = solve(V.bar.inv) A.bar = V.bar%<em>%(t(X)%</em>%diag(1/s)%<em>%Y + diag(1/diag(V.prior))%</em>%A.prior) nu.bar = nrow(Y) + nu.prior S.bar = S.prior + t(Y)%<em>%diag(1/s)%</em>%Y + t(A.prior)%<em>%diag(1/diag(V.prior))%</em>%A.prior - t(A.bar)%<em>%V.bar.inv%</em>%A.bar S.bar.inv = solve(S.bar) ```</p>
-<p>```{} ::: {.cell}</p>
-<p>:::</p>
+</div>
 <p>The following is largely taken from Ray’s code and provided with consent.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -439,7 +381,7 @@ t = t + 1  </code></pre>
 <p>IRFS using only pre 2020 data</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>By removing the post-COVID data it can be seen that the shock to earnings results in a very different pattern. This is consistent with the belief that the large COVID shock has a distortionary effect on all estimations. In this case a shock to weekly earnings results in only a very small effect moving forward, as well as a small decrease in the unemployment rate which adjusts over time but never returns to no change. RGDP per capita shows a similar response regardless of if COVID data is included or not, the main difference is that it does not exhibit a large counter-shock at any point. CPI appear uninfluenced by Weekly Earnings, as does Government Spending. M2 money supply exhibits a downward shift, but to a much lesser extent than the previous model.</p>
@@ -447,6 +389,7 @@ t = t + 1  </code></pre>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<p><a href="https://academic.oup.com/ej/article/132/645/1709/6459206" class="uri">https://academic.oup.com/ej/article/132/645/1709/6459206</a></p>
 
 
 </section>
