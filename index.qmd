@@ -281,21 +281,7 @@ par(mfrow=c(1,1),mar=c(5, 4, 4, 2)) #reset default values
   }
   knitr::kable(cbind(adf, adf.diff), index=TRUE)
 
-# tseries::adf.test(as.vector(urate$`Unemployment Rate %`), k = 4)
-# tseries::adf.test(as.vector(mearn$`Weekly Earnings`), k = 4)
-# tseries::adf.test(as.vector(rgdpcap$`Real GDP Per Capita`), k = 4)
-# tseries::adf.test(as.vector(CPI$CPI), k = 4)
-# tseries::adf.test(as.vector(govex$`GovSpend in Billions`), k = 4)
-# tseries::adf.test(as.vector(M2$`M2 Money Supply`), k = 4)
-# 
-# #For all reject unit root stationarity
-# 
-# tseries::adf.test(diff(as.vector(urate$`Unemployment Rate %`), k = 3))
-# tseries::adf.test(diff(as.vector(mearn$`Weekly Earnings`), k = 3))
-# tseries::adf.test(diff(as.vector(rgdpcap$`Real GDP Per Capita`), k = 3))
-# tseries::adf.test(diff(as.vector(CPI$CPI), k = 3))
-# tseries::adf.test(diff(as.vector(govex$`GovSpend in Billions`), k = 3))
-# tseries::adf.test(diff(as.vector(M2$`M2 Money Supply`), k = 3))
+
 ```
 
 All of the variables of interest show a gradually decaying ACF and no significant PACF. This is consistent with variables that have a strong dependence on prior observed values and no significant dependence on the error of the prior observations. This indicates that an AR model is indeed useful for predicting the behavior of these variables.
@@ -430,14 +416,71 @@ plot(M2$Date , M2$`M2 Money Supply`, type = "l", lwd = 2,
 par(mfrow=c(1,1),mar=c(5, 4, 4, 2)) #reset default values
 
 ```
+ACF, PACF, and ADF test for log difference bellow
 
+```{r}
+#| echo: true 
+#| warning: false
+#| message: false
+#| code-fold: true
+#| code-summary: "ADF Tests"
+
+
+#plot autocorrelation functions
+par(mfrow=c(3,2),mar=c(3,3,3,3))
+acf(urate[,2],main="Unemployment rate")
+acf(mearnl[,2],main="Weekly Earnings")
+acf(rgdpcapl[,2],main="Real GDP per capita")
+acf(CPIl[,2],main="CPI")
+acf(govexl[,2],main="Government Expenditure")
+acf(M2l[,2],main="M2")
+
+
+#plot PACF
+pacf(urate[,2],main="Unemployment rate")
+pacf(mearnl[,2],main="Weekly Earnings")
+pacf(rgdpcapl[,2],main="Real GDP per capita")
+pacf(CPIl[,2],main="CPI")
+pacf(govexl[,2],main="Government Expenditure")
+pacf(M2l[,2],main="M2")
+
+par(mfrow=c(1,1),mar=c(5, 4, 4, 2)) #reset default values
+
+#ADF testing
+#See if there is a way to make ADF tests prettier
+  library(tseries)
+  data=cbind(urate[,2],mearnl[1:176,2],rgdpcapl[1:176,2],CPIl[1:176,2],govexl[1:176,2],M2l[1:176,2])
+  adf <- as.data.frame(matrix(nrow=6,ncol=3,NA))
+  rownames(adf) <- colnames(data[1:6])
+  colnames(adf) <- c("Dickey-Fuller","Lag-order", "p-value")
+  
+  for (i in 1:ncol(data)){
+    adf_tmp                 <-  adf.test(data[,i],k=4)
+    adf[i,"Dickey-Fuller"]  <-  round(as.numeric(adf_tmp[1]),3)
+    adf[i,"Lag-order"]      <-  as.numeric(adf_tmp[2])
+    adf[i,"p-value"]        <-  round(as.numeric(adf_tmp[4]),3)
+  }
+  
+  adf.diff <- as.data.frame(matrix(nrow=6,ncol=3,NA))
+  rownames(adf.diff) <- colnames(data[1:6])
+  colnames(adf.diff) <- c("Dickey-Fuller diff","Lag-order diff", "p-value diff")
+  
+  for (i in 1: ncol(data)){
+    tmp.diff                         <-  adf.test(diff(data[,i]),k=3)
+    adf.diff[i,"Dickey-Fuller diff"] <-  round(as.numeric(tmp.diff[1]),3)
+    adf.diff[i,"Lag-order diff"]     <-  as.numeric(tmp.diff[2])
+    adf.diff[i,"p-value diff"]       <-  round(as.numeric(tmp.diff[4]),3)
+  }
+  knitr::kable(cbind(adf, adf.diff), index=TRUE)
+
+```
 The log difference and first difference graphs are identical in shape with only the magnitude being different. This supports both returning similar results in later analysis.
 
 As can be seen above, many of the series are reasonably static over time except for the beginning of the COVID-19 pandemic. This sudden, dramatic change can skew data, especially given the relatively small number of observations amplifying the effects of any outliers. As a result a simple SVAR may not return accurate results due to attributing too much weight to COVID shocks since SVAR models have difficulty accounting for exogenous shocks.
 
 To compensate for this the variance spike during the early periods of COVID will need to be accounted for.
 
-## Model and Hypothesis THIS SECTION IS NEXT TO BE UPDATED
+## Model and Hypothesis
 
 The model utilized will be a six variables SVAR with the following specification
 
@@ -1576,7 +1619,7 @@ plot.ts(extension.mcmc$Theta, main = "Metropolis MCMC draws")
 
 
 
-extended.model <- sign.extension(Y, X, S = 500, sign.restrictions = R1, k1 = 1, 
+extended.model <- sign.extension(Y, X, S = 10000, sign.restrictions = R1, k1 = 1, 
                                  Theta.mh = extension.mcmc$Theta[10001:20000,])
 
 
@@ -1586,7 +1629,7 @@ irf.plot(A.posterior = extended.model$A.posterior, B0.posterior = extended.model
 
 The above graphs are generated using log differences in contrast to previous data.Urate continues to be in percentage terms and is unchanged. This is due to using simply first difference data returning extremely aberrant results resulting in rapid, exponential changes when impulse response functions were estimated. No other solution to this problem was found. The same sign restrictions as before are utilized.
 
-The current impulse response functions show that there is a minimal ongoing effect on weekly earnings. That is that a one period shock tends to persist in full but lacks any significant ongoing effects on earnings. Unemployment experiences a shift to a higher level that slowly rises over time before begging to decrease once more. The time horizon on this shift is relatively long, implying that the declining wages in real terms due to inflation could be the cause of unemployment rate lowering over time. Real GDP Per Capita shows a slight change , initially a drop before it rises slightly once more, but the impact is very small. CPI does show a significant increase throughout the first year before it continues to rise again at the prior rate. Government spending exhibits no strong changes, not does M2 money supply.
+The current impulse response functions show that there is a minimal ongoing effect on weekly earnings. That is that a one period shock tends to persist in full but lacks any significant ongoing effects on earnings. Unemployment experiences a shift to a higher level that slowly rises over time before begging to decrease once more. The time horizon on this shift is relatively long, implying that the declining wages in real terms due to inflation could be the cause of unemployment rate lowering over time. Real GDP Per Capita shows a slight change , initially a drop before it rises slightly once more, but the impact is very small. Interestingly, CPI does show a small decrease, a possible explanation for this is that changes in output may result in higher productivity, offsetting inflation due to higher wages. Government spending exhibits no strong changes, not does M2 money supply, though M2 money supply does stay slightly above 0 so the long-term impact may be large.
 
 For more meaningful comparison, the basic model using log differences is shown below 
 ```{r Repeat of Basic Model, echo=FALSE,results='hide',fig.keep='all'}
@@ -1685,7 +1728,9 @@ for (n in 1:N){
 }
 ```
 
+An important note, as these are log differences is that a one period shock still has ongoing impacts, unlike if it were in absolute terms. In absolute terms, a one period shock followed by an IRF that stays close to zero would mean that the effect is only present for one period. In first differences, a one period shock followed by an IRF that stays close to zero would mean that the shock causes an overall shift in the level on a permanent basis, but doesn't adjust the future differences. This is why a one period shock to income in this case shows an ongoing impact on unemployment, but no effect on income.
 
+This does put limitations on the model as it cannot adequately account of the effects of a one period increase in income, such as stimulus checks, that have no ongoing effects whatsoever. However it can potentially account for other ongoing changes as a universal basic income or increased unemployment benefits. Curiously, government spending barely changes at all. This may be an indicator that, while the money is coming from the government, other benefits may be cut to cause the total change in spending to come out to net zero or very close to it.
 
 ## References {.unnumbered}
 
