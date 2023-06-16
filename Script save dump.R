@@ -230,3 +230,48 @@ for (i in 1:S) {
   S.bar       = S.prior + t(Y)%*%diag(1/s)%*%Y + t(A.prior)%*%diag(1/diag(V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
   S.bar.inv   = solve(S.bar)
   ```
+  
+  
+  
+  
+  
+  
+  #Commented out as code contains errors and is non vital
+  #--------------------------------------------------
+  
+  #these should be a given I *think*
+  #error with B0.tilde
+  
+  #B0.tilde      = t(solve(chol(Sigma)))
+  #B1.tilde      = B0.tilde%*%A
+  #IR.0.tilde    = solve(B0.tilde)
+  #IR.1.tilde    = solve(B0.tilde)%*%B1.tilde%*%solve(B0.tilde)
+  
+  #This just repeats until I get one where sign restrictions hold
+  #Assuming the above is all set up properly this shoudl require no more input
+  #some of this might require a touch of editing
+  #E,g, X may be based on some given parameters instead of being arbitrary
+  #sign.restrictions.do.not.hold = TRUE
+  #i=1
+  #while (sign.restrictions.do.not.hold){
+  #  X           = matrix(rnorm(9),3,3)
+  #  QR          = qr(X, tol = 1e-10)
+  #  Q           = qr.Q(QR,complete=TRUE)
+  #  R           = qr.R(QR,complete=TRUE)
+  #  Q           = t(Q %*% diag(sign(diag(R))))
+  #  B0          = Q%*%B0.tilde
+  #  B1          = Q%*%B1.tilde
+  #  B0.inv      = solve(B0)
+  #  check       = prod(R1 %*% rbind(B0.inv,B0.inv%*%B1%*%B0.inv) %*% diag(3)[,1] > 0)
+  #  if (check==1){sign.restrictions.do.not.hold=FALSE}
+  #  i=i+1
+  #}
+  #i
+  #Q
+  #B0
+  #B1
+  #IR.0        = B0.inv
+  #IR.1        = B0.inv%*%B1%*%B0.inv
+  #IR.0
+  #IR.1
+  #R1 %*% rbind(IR.0,IR.1) %*% diag(3)[,1]

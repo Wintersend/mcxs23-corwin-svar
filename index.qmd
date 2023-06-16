@@ -14,7 +14,7 @@ bibliography: references.bib
 
 # 
 
-## Objective and Motivation FORCING AN UPDATE DELETE AFTER
+## Objective and Motivation
 
 The goal of this research project is to analyze the impact of unconditional government stipends on the U.S. economy, such as stimulus checks. To identify these effects I will analyze the effects of the stimulus checks and increased unemployment benefits issued by the US government in the wake of the COVID-19 pandemic.
 
@@ -58,7 +58,6 @@ All values except unemployment rate are taken as first differences to make them 
 #| code-summary: "Show code"
 #| message: false
 #| warning: false
-
 
 #load requisite packages
 library(fredr)
@@ -141,26 +140,19 @@ rgdpcap = rgdpcap %>% filter(rgdpcap$Date >= '1979 Q1')
 urate$Date = as.yearqtr(urate$Date, format = "%YQ%q")
 
 #load in CPI, as Inflation is a key target of the FED
-
 CPI = fredr(series_id = "CPILFESL")
 
 #select only needed data
-
 CPI = subset(CPI, select = c(date, value))
 
 #Adjust CPI to quarterly
-
 CPI = CPI %>%
   group_by(date = format(as.yearqtr(date, "%b-%Y"), "%YQ%q")) %>%
   summarise_all(mean)
 
 #rename column names to be more easily interpreted
 colnames(CPI) = c("Date", "CPI")
-
-
 CPI$Date = as.yearqtr(CPI$Date, format = "%YQ%q")
-
-
 
 #should maybe include M2 money supply as a possible vector
 #issue with M2 money suppl defiintion being changed
@@ -170,11 +162,9 @@ CPI$Date = as.yearqtr(CPI$Date, format = "%YQ%q")
 #do not include at present 
 
 #load in government consumption spending
-
 govex = fredr(series_id = "A955RX1Q020SBEA")
 
 #select only needed data
-
 govex = subset(govex, select = c(date, value))
 
 #Re-chain to 2020 dollars
@@ -183,37 +173,26 @@ govex$value = (govex$value*258.811)/229.594
 
 #rename column names to be more easily interpreted
 colnames(govex) = c("Date", "GovSpend in Billions")
-
-
 govex$Date = as.yearqtr(govex$Date, format = "%YQ%q")
-
-
-
 
 #load in real M2
 
 M2 = fredr(series_id = "M2REAL")
 
 #select only needed data
-
 M2 = subset(M2, select = c(date, value))
 
 #Re-chain to 2020 dollars
 M2$value = (M2$value*258.811)/100
 
 #adjust to be quarterly
-
 M2 = M2 %>%
   group_by(date = format(as.yearqtr(date, "%b-%Y"), "%YQ%q")) %>%
   summarise_all(mean)
 
 #rename column names to be more easily interpreted
 colnames(M2) = c("Date", "M2 Money Supply")
-
-
 M2$Date = as.yearqtr(M2$Date, format = "%YQ%q")
-
-
 
 #visually demonstrate values
 par(mfrow=c(3,2), mar=c(2,2,2,2))
@@ -319,17 +298,85 @@ par(mfrow=c(1,1),mar=c(5, 4, 4, 2)) #reset default values
 # tseries::adf.test(diff(as.vector(M2$`M2 Money Supply`), k = 3))
 ```
 
-All of the variables of interest show a gradually decaying ACF and essentially no significant PACF. This is consistent with variables that have a strong dependence on prior observed values and no significant dependence on the error of the prior observations. This indicates that an AR model is indeed useful for predicting the behavior of these variables.
+All of the variables of interest show a gradually decaying ACF and no significant PACF. This is consistent with variables that have a strong dependence on prior observed values and no significant dependence on the error of the prior observations. This indicates that an AR model is indeed useful for predicting the behavior of these variables.
 
 The ADF tests indicate that all of the processes are unit root non-stationary. This is consistent with expectations as all of the variables visually exhibit a strong upward trend. Unemployment rate being non-stationary is something of a surprise, but it has the smallest p-value at 0.1337. On visual inspection it can be seen that, barring the COVID shock, unemployment rate has been cyclical but downward trending.
 
-First Differences shown below.
+In light of later changes, presented below are additional graphs showing logged differences.
+
 
 ```{r}
+
+
+#log
+n = nrow(mearn)
+mearnl = mearn
+mearnl[,2] = log(mearnl[,2])
+mearnl = cbind(mearnl[2:n,1], diff(mearnl$`Weekly Earnings`))
+#colname since its renaming and being annoying
+colnames(mearnl) = c("Date", "Weekly Earnings")
+
+n = nrow(rgdpcap)
+rgdpcapl = rgdpcap
+rgdpcapl[,2] = log(rgdpcapl[,2])
+rgdpcapl = cbind(rgdpcapl[2:n,1], diff(rgdpcapl$`Real GDP Per Capita`))
+colnames(rgdpcapl) = c("Date", "Real GDP Per Capita")
+
+n = nrow(CPI)
+CPIl = CPI
+CPIl[,2] = log(CPIl[,2])
+CPIl = cbind(CPIl[2:n,1],diff(CPIl$CPI))
+colnames(CPIl) = c("Date", "CPI")
+
+n = nrow(govex)
+govexl = govex
+govexl[,2] = log(govexl[,2])
+govexl = cbind(govexl[2:n,1],diff(govexl$`GovSpend in Billions`))
+colnames(govexl) = c("Date", "GovSpend in Billions")
+
+n = nrow(M2)
+M2l = M2
+M2l[,2] = log(M2l[,2])
+M2l = as.data.frame(cbind(M2l[2:n,1],diff(M2l$`M2 Money Supply`)))
+colnames(M2l) = c("Date", "M2 Money Supply")
+
+
+#visually demonstrate values
+par(mfrow=c(3,2),mar=c(3,3,3,3))
+plot(urate$Date, urate$`Unemployment Rate %`, type = "l", lwd = 2,
+     main = "US Unemployment Rate Over Time", xlab = "Year/Quarter", 
+     ylab = "Unemployment %", col = "blue")
+
+plot(mearnl$`Date` ,mearnl$`Weekly Earnings` , type = "l", lwd = 2,
+     main = "US Median Weekly Earnings (2020 Dollars) First Difference", xlab = "Year/Quarter", 
+     ylab = "Weekly Earnings in $", col = "blue")
+
+plot(rgdpcapl$Date , rgdpcapl$`Real GDP Per Capita` , type = "l", lwd = 2,
+     main = "US Real GDP Per Capita (2020 Dollars) First Difference", xlab = "Year/Quarter", 
+     ylab = "Real GDP in $", col = "blue")
+
+plot(CPIl$Date , CPIl$CPI, type = "l", lwd = 2,
+     main = "US CPI Over Time (Excluding Food and Energy) First Difference", xlab = "Year/Quarter", 
+     ylab = "CPI (1983 Base)", col = "blue")
+
+plot(govexl$Date , govexl$`GovSpend in Billions`, type = "l", lwd = 2,
+     main = "US Governement Consumption Over Time First Difference", xlab = "Year/Quarter", 
+     ylab = "Billions of 2020 dollars", col = "blue")
+
+plot(M2l$Date , M2l$`M2 Money Supply`, type = "l", lwd = 2,
+     main = "US M2 Money Supply Over Time First Difference", xlab = "Year/Quarter", 
+     ylab = "Billions of 2020 dollars", col = "blue")
+
+
+```
+
+First Differences shown below.
+
+```{r First Difference}
 #| echo: true 
 #| message: false
 #| warning: false
-#| #| code-fold: true
+#| code-fold: true
 #| code-summary: "First-Differenced Plots"
 #Take first differences
 #It's making me select an end point if I want to use not all of column 1
@@ -384,6 +431,8 @@ par(mfrow=c(1,1),mar=c(5, 4, 4, 2)) #reset default values
 
 ```
 
+The log difference and first difference graphs are identical in shape with only the magnitude being different. This supports both returning similar results in later analysis.
+
 As can be seen above, many of the series are reasonably static over time except for the beginning of the COVID-19 pandemic. This sudden, dramatic change can skew data, especially given the relatively small number of observations amplifying the effects of any outliers. As a result a simple SVAR may not return accurate results due to attributing too much weight to COVID shocks since SVAR models have difficulty accounting for exogenous shocks.
 
 To compensate for this the variance spike during the early periods of COVID will need to be accounted for.
@@ -415,7 +464,22 @@ Estimating the effects of increased unemployment benefits is more difficult but 
 
 These are all relevant to the economic situation in the United States going forward. A combination of stagnating wages, low minimum wage, and increasing income inequality threatens to force more forceful government action to avert economic crisis stemming from a lower-class which no longer lives at a subsistence level. While this state has not yet been reached it is a looming threat which must be addressed. The number of government programs to help low income individuals is immense but oftentimes much time and energy is spent ensuring that the "undeserving" are not given these benefits which can lead to those in need being rejected or ending up in worse circumstances due to long delays in receiving assistance. All of the proposed methods due to their weak targeting requirements would provide relief more rapidly and potentially aid in economic growth more than programs targeted at covering expenses related to a specific aspect of life.
 
-```{r}
+Sign restrictions will be utilized to conform to the usual thought process of the economic situation in the United States.
+* indicates an unrestricted relationship
+
+$$\begin{bmatrix}
+  Earnings & Urate & RGDP & CPI & Govex & M2 \\
+  * & * & * & * & * & *\\
+  1 & * & * & * & * & *\\
+  1 & * & * & * & * & *\\
+  1 & * & * & * & * & *\\
+  1 & * & * & * & * & *\\
+  * & * & * & * & * & *
+\end{bmatrix}$$
+
+As the shock is to earnings, all other relations are free. By many in the US it is believed that higher wages would lead to higher unemployment. There is evidence that GDP rises when wages are increased. It stands to reason the higher pay would lead to inflation. Government consumption is positive as the income change comes from government spending. M2 money supply has several conflicting effects and it is unclear which would dominate so it is left unrestricted.
+
+```{r Setup}
 #| echo: true 
 #| message: false
 #| warning: false
@@ -432,6 +496,8 @@ These are all relevant to the economic situation in the United States going forw
 
 #n = nrow(urate)
 #urate = urate[2:n,]
+
+#Honestly, if I were smart this would be some fancy function, I'm not, so it isn't
 
 start.date = '1979 Q2'
 end.date = '2023 Q1'
@@ -486,6 +552,8 @@ n = nrow(y)
 #create VAR model?
 #VAR(4) for 1 year of lags
 
+#It might be possible to cut this depending on if I actually use it anywhere
+
 # setup
 ############################################################
 
@@ -494,7 +562,8 @@ N       = 6
 #number of lags
 p       = 4
 #number of draws
-S       = 50000
+#I am insane this is like 6 hour run time at 50,000
+S       = 20000
 #not the foggiest
 h       = 8
 
@@ -565,55 +634,20 @@ A = A.bar
 #pretty sure this is also just a posterior
 Sigma         = S.bar
 
-#Commented out as code contains errors and is non vital
-#--------------------------------------------------
 
-#these should be a given I *think*
-#error with B0.tilde
-
-#B0.tilde      = t(solve(chol(Sigma)))
-#B1.tilde      = B0.tilde%*%A
-#IR.0.tilde    = solve(B0.tilde)
-#IR.1.tilde    = solve(B0.tilde)%*%B1.tilde%*%solve(B0.tilde)
-
-#This just repeats until I get one where sign restrictions hold
-#Assuming the above is all set up properly this shoudl require no more input
-#some of this might require a touch of editing
-#E,g, X may be based on some given parameters instead of being arbitrary
-#sign.restrictions.do.not.hold = TRUE
-#i=1
-#while (sign.restrictions.do.not.hold){
-#  X           = matrix(rnorm(9),3,3)
-#  QR          = qr(X, tol = 1e-10)
-#  Q           = qr.Q(QR,complete=TRUE)
-#  R           = qr.R(QR,complete=TRUE)
-#  Q           = t(Q %*% diag(sign(diag(R))))
-#  B0          = Q%*%B0.tilde
-#  B1          = Q%*%B1.tilde
-#  B0.inv      = solve(B0)
-#  check       = prod(R1 %*% rbind(B0.inv,B0.inv%*%B1%*%B0.inv) %*% diag(3)[,1] > 0)
-#  if (check==1){sign.restrictions.do.not.hold=FALSE}
-#  i=i+1
-#}
-#i
-#Q
-#B0
-#B1
-#IR.0        = B0.inv
-#IR.1        = B0.inv%*%B1%*%B0.inv
-#IR.0
-#IR.1
-#R1 %*% rbind(IR.0,IR.1) %*% diag(3)[,1]
 ```
 
-The following is largely taken from Ray's code and provided with consent.
+## Analysis
 
-```{r}
+```{r Basic Model, echo=FALSE,results='hide',fig.keep='all'}
 #| echo: false
 #| message: false
 #| warning: false
 #| code-fold: true
 #| code-summary: "Show code"
+#| label: First Difference Including Covid
+
+
 # data = input data should be quarterly
 #X = X matrix generated externally based on Y matrix
 # p = lags
@@ -841,12 +875,12 @@ for (n in 1:N){
     axis(1,c(1,2,4,8,12,13),c("1 quarter","","1 year","2 years","3 years",""),cex.axis=0.9)
   }
   axis(2,c(ylims[1],0,ylims[2]),round(c(ylims[1],0,ylims[2]),3))
-  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col="#ccffff",border="salmon")
+  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col=adjustcolor("#05386B", alpha.f = 0.5),border="salmon")
   lines(hh, IRFs.k1[n,hh],lwd=2,col="red")
 }
 ```
 
-## Analysis
+
 
 As can be seen, when weekly earnings is shocked, it tends to cause a shock in the opposite direction in the next period, followed by a small increase, and then stabilizing such that by the end of the second year an income shock creates no further changes in the economy. Curiously, unemployment rate also falls and RGDP experiences a spike before returning to no continuing effect. M2 Money Supply is decreased and suffers from a decreased future growth as well.
 
@@ -860,12 +894,13 @@ Further analysis is needed as I am unclear why these results are occurring in wh
 
 IRFS using only pre 2020 data
 
-```{r}
+```{r Abbreviated IRF, echo=FALSE,results='hide',fig.keep='all'}
 #| echo: false 
 #| message: false
 #| warning: false
 #| code-fold: true
 #| code-summary: "Show code"
+#| label: First Difference Ignoring Covid
 
 #set up start and end date since I call them so much
 #I'm good at optimizing my code I swear
@@ -876,8 +911,8 @@ end.date.abv = '2020 Q1'
 
 #Cull data to only needed values
 
-urate = urate %>% filter(urate$Date >= start.date.abv)
-urate = urate %>% filter(urate$Date < end.date.abv)
+urate.abv = urate %>% filter(urate$Date >= start.date.abv)
+urate.abv = urate.abv %>% filter(urate.abv$Date < end.date.abv)
 
 mearn = mearn %>% filter(mearn$Date >= start.date.abv)
 mearn = mearn %>% filter(mearn$Date < end.date.abv)
@@ -900,7 +935,7 @@ M2 = M2 %>% filter(M2$Date < end.date.abv)
 
 #set up y matrix
 #doing it like this so I can toggle stuff off and on
-y.abv = cbind(mearn[,2], urate[,2])
+y.abv = cbind(mearn[,2], urate.abv[,2])
 y.abv = cbind(y.abv, rgdpcap[,2])
 y.abv = cbind(y.abv, CPI[,2])
 y.abv = cbind(y.abv, govex[,2])
@@ -993,11 +1028,12 @@ hh          = 1:(h+1)
 #This needs to look prettier
 #hmm. My graphs are not rendering correctly
 
+
 #pdf(file="irf-GFCF.pdf", height=9, width=12)
 par(mfrow=c(3,2), mar=c(3,3.5,2,2),cex.axis=1.5, cex.lab=1.5)
 for (n in 1:N){
   ylims     = range(IRFs.k1[n,hh],IRFs.k1.hdi[,n,hh])
-  plot(hh,IRFs.k1[n,hh], type="l", ylim=ylims, axes=FALSE, xlab="3 years", ylab="",
+  plot(hh,IRFs.k1[n,hh], type="l", ylim=ylims, axes=FALSE, xlab="", ylab="",
        main=rownames(IRFs.k1)[n])
   abline(h = 0, col = "firebrick")
   if (n==N-1 | n==N){
@@ -1006,7 +1042,7 @@ for (n in 1:N){
     axis(1,c(1,2,4,8,12,13),c("1 quarter","","1 year","2 years","3 years",""),cex.axis=0.9)
   }
   axis(2,c(ylims[1],0,ylims[2]),round(c(ylims[1],0,ylims[2]),3))
-  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col="#ccffff",border="salmon")
+  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col=adjustcolor("#05386B", alpha.f = 0.5),border="salmon")
   lines(hh, IRFs.k1[n,hh],lwd=2,col="red")
 }
 
@@ -1018,13 +1054,13 @@ By removing the post-COVID data it can be seen that the shock to earnings result
 
 Moving forward into the next model, COVID-19 data will be included but it will be treated as a shock to variance. This ideally allows for the most accurate model yet as it uses the full data set but does not suffer from large distortionary effects.
 
-```{r}
+```{r Final Run}
 #| echo: true 
 #| message: false
 #| warning: false
 #| code-fold: true
 #| code-summary: "Show code"
-
+#| lael: Log Difference Covid-Adjustment
 
 #THROWING IN MORE STOLEN CODE
 #analyze this block by block tomorrow
@@ -1163,7 +1199,7 @@ mh.mcmc <- function(Y, X, p=1, S.mh = 1000, c, W = diag(4), theta.init,
   #theta_old <- Theta[nrow(Theta),]
   
   # W <- diag(4)
-  set.seed(1)
+  set.seed(69420)
   pb = txtProgressBar(min = 0, max = S.mh, initial = 0) 
   for (s in 1:S.mh){
     setTxtProgressBar(pb,s)
@@ -1237,18 +1273,419 @@ mh.mcmc <- function(Y, X, p=1, S.mh = 1000, c, W = diag(4), theta.init,
 }
 
 #------------------------------
+#Sign Extension Code
+#------------------------------
+sign.extension <- function(Y, X, p=4, S=100,  sign.restrictions = R1,
+                           k1=1, k2=100, shockvar = 1, Theta.mh){
+
+  # N = no. of variables
+  N = ncol(y)
+  # p = no. of lags
+  K = 1 + p*N
+  # forecast horizon
+  # h       = 8
+  
+  
+  covid.vec <- function(theta){
+    vec <- theta[1:3]
+    for (i in 4:12){
+      vec <- c(vec, 1 + (theta[3]-1)*theta[4]^(i-3))
+    }
+      
+    return(vec)
+  }
+  
+
+  # array of S diag(covid volatility) matrices
+  
+  #add an extra row, delete the first to fix this
+  diagV.sqinv <- array(NA, c(nrow(Y),nrow(Y),S))
+  
+  for (s in 1:S){
+    v_ones <- ts(rep(1, nrow(Y)-12), 1) 
+    diagV.sqinv[,,s] <- diag(c(v_ones, covid.vec(Theta.mh[s,]))^(-2))
+  }
+  
+  # Calculate MLE for prior 
+  ############################################################
+  A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
+  Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
+  # round(A.hat,3)
+  # round(Sigma.hat,3)
+  # round(cov2cor(Sigma.hat),3)
+  
+  # Specify prior distribution
+  ############################################################
+  kappa.1     = k1
+  kappa.2     = k2
+  kappa.3     = 1
+  A.prior     = matrix(0,nrow(A.hat),ncol(A.hat))
+  A.prior[2:(N+1),] = kappa.3*diag(N)
+  V.prior     = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+  S.prior     = diag(diag(Sigma.hat))
+  nu.prior    = N+1
+  
+  # Posterior draws 
+  ############################################################
+  Sigma.posterior   = array(NA,c(N,N,S))
+  A.posterior       = array (NA,c(K,N,S))
+  B0.posterior       = array(NA,c(N,N,S))
+  Bplus.posterior       = array(NA,c(N,K,S))
+  
+  pb = txtProgressBar(min = 0, max = S, initial = 0) 
+  for (s in 1:S){
+    setTxtProgressBar(pb,s)
+    V.bar.inv   = t(X)%*%diagV.sqinv[,,s]%*%X + diag(1/diag(V.prior))
+    V.bar       = solve(V.bar.inv)
+    A.bar       = V.bar%*%(t(X)%*%diagV.sqinv[,,s]%*%Y + diag(1/diag(V.prior))%*%A.prior)
+    nu.bar      = nrow(Y) + nu.prior
+    S.bar       = S.prior + t(Y)%*%diagV.sqinv[,,s]%*%Y + t(A.prior)%*%diag(1/diag(V.prior))%*%
+                  A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
+    S.bar.inv   = solve(S.bar)
+    L                 = t(chol(V.bar))
+    
+    # RF posterior draws
+    Sigma.posterior[,,s] <- solve(rWishart(1, df=nu.bar, Sigma=S.bar.inv)[,,1])
+    cholSigma.s     = chol(Sigma.posterior[,,s])
+    A.posterior[,,s]       = matrix(mvrnorm(1,as.vector(A.bar), Sigma.posterior[,,s]%x%V.bar),ncol=N)
+    A.posterior[,,s]= A.bar + L%*%A.posterior[,,s]%*%cholSigma.s
+    
+    # SF posterior draws 
+    B0.posterior[,,s]= solve(t(cholSigma.s))
+    # Draw Bplus
+    Bplus.posterior[,,s] = B0.posterior[,,s]%*%t(A.posterior[,,s])
+  }
+  
+  
+  # Identification via sign restrictions on theta0
+  ############################################################
+
+  # generate corresponding R matrix
+  R1 = diag(sign.restrictions)
+  
+  # storage matrices for Q identified estimates
+  i.vec <- c()
+  Q.iden   = array(NA,c(N,N,S))
+  B0.iden = array(NA,c(N,N,S))
+  B1.iden = array(NA,c(N,K,S))
+  A.iden = array (NA,c(K,N,S))
+  
+  pb = txtProgressBar(min = 0, max = S, initial = 0) 
+
+  for (s in 1:S){
+    
+    setTxtProgressBar(pb,s)
+    
+    # pick-up a B0 from S
+    B0.tilde <- B0.posterior[,,s]
+    IR.0.tilde    = solve(B0.tilde)
+    B1.tilde      = Bplus.posterior[,,s]
+    #IR.1.tilde    = solve(B0.tilde)%*%B1.tilde%*%solve(B0.tilde)
+
+    # Search for appropriate Q 
+    sign.restrictions.do.not.hold = TRUE
+    i=1
+    while (sign.restrictions.do.not.hold){
+      X           = matrix(rnorm(N^2),N,N)
+      QR          = qr(X, tol = 1e-10)
+      Q           = qr.Q(QR,complete=TRUE)
+      R           = qr.R(QR,complete=TRUE)
+      Q           = t(Q %*% diag(sign(diag(R))))
+      B0          = Q%*%B0.tilde
+      B1          = Q%*%B1.tilde
+      B0.inv      = solve(B0)
+      check       = prod(R1 %*% B0.inv %*% diag(N)[,shockvar] >= 0)
+      A           = t(solve(B0)%*%B1)
+
+      if (check==1){sign.restrictions.do.not.hold=FALSE}
+      i=i+1
+    }
+    i.vec <- c(i.vec, i)
+    Q.iden[,,s] <- Q
+    B0.iden[,,s] <- B0
+    B0.mean <- apply(B0.iden,1:2,mean)
+    B1.iden[,,s] <- B1
+    B1.mean <- apply(B1.iden,1:2,mean)
+    A.iden[,,s] <- A
+    A.mean <- apply(A.iden,1:2,mean)
+  }
+
+  re <- list("i" = i.vec, "Q" = Q.iden, "B0"= B0.iden, "B0.mean" = B0.mean,
+             "Bplus"= B1.iden, "Bplus.mean" = B1.mean, "A" = A.iden, "A.mean" = A,
+             "A.posterior"=A.posterior, "Sigma.posterior"=Sigma.posterior, "Theta"= Theta.mh)
+  return(re)
+  
+}
+
+
+#------------------------------
+#IRF plot
+#------------------------------
+
+irf.plot <- function(A.posterior, B0.posterior, shock.var, p=4, h = 12,
+                     varnames = varname_vec){
+  # Define colors
+  ############################################################
+  mcxs1  = "#05386B"
+  mcxs2  = "#379683"
+  mcxs3  = "#5CDB95"
+  mcxs4  = "#8EE4AF"
+  mcxs5  = "#EDF5E1"
+  purple = "#b02442"
+  
+  mcxs1.rgb   = col2rgb(mcxs1)
+  mcxs1.shade1= rgb(mcxs1.rgb[1],mcxs1.rgb[2],mcxs1.rgb[3], alpha=120, maxColorValue=255)
+  mcxs2.rgb   = col2rgb(mcxs2)
+  mcxs2.shade1= rgb(mcxs2.rgb[1],mcxs2.rgb[2],mcxs2.rgb[3], alpha=120, maxColorValue=255)
+  
+  # Impulse response functions
+  ############################################################
+  N <- dim(A.posterior)[2]
+  S <- dim(A.posterior)[3]
+  
+  # transform B0 matrices to B
+  B.posterior <- array(NA, c(N,N,S))
+  for (s in 1:S){
+  B.posterior[,,s] <- solve(B0.posterior[,,s])
+  }
+  
+  IRF.posterior     = array(NA,c(N,N,h+1,S))
+  IRF.inf.posterior = array(NA,c(N,N,S))
+  J                 = cbind(diag(N),matrix(0,N,N*(p-1)))
+  
+  pb = txtProgressBar(min = 0, max = S, initial = 0) 
+  for (s in 1:S){
+    setTxtProgressBar(pb,s)
+    # define A matrix in VAR(1) representation
+    A.bold          = rbind(t(A.posterior[2:(1+N*p),,s]),cbind(diag(N*(p-1)),matrix(0,N*(p-1),N)))
+    IRF.inf.posterior[,,s]          = J %*% solve(diag(N*p)-A.bold) %*% t(J) %*% B.posterior[,,s]
+    A.bold.power    = A.bold
+    for (i in 1:(h+1)){
+      if (i==1){
+        IRF.posterior[,,i,s]        = B.posterior[,,s]
+      } else {
+        IRF.posterior[,,i,s]        = J %*% A.bold.power %*% t(J) %*% B.posterior[,,s]
+        A.bold.power                = A.bold.power %*% A.bold
+      }
+    }
+  }
+  
+  # save IRFs
+  save(IRF.posterior,IRF.inf.posterior, file="irf-k1.RData")
+
+  # IRF plots GFCF
+  ############################################################
+  IRFs.k1           = apply(IRF.posterior[,shock.var,,],1:2,mean)
+  IRFs.inf.k1       = apply(IRF.inf.posterior[,shock.var,],1,mean)
+  rownames(IRFs.k1) = varnames
+  
+  IRFs.k1.hdi    = apply(IRF.posterior[,shock.var,,],1:2,hdi, credMass=0.68)
+  hh          = 1:(h+1)
+
+par(mfrow=c(3,2), mar=c(3,3.5,2,2),cex.axis=1.5, cex.lab=1.5)
+for (n in 1:N){
+  ylims     = range(IRFs.k1[n,hh],IRFs.k1.hdi[,n,hh])
+  plot(hh,IRFs.k1[n,hh], type="l", ylim=ylims, axes=FALSE, xlab="", ylab="",
+       main=rownames(IRFs.k1)[n])
+  abline(h = 0, col = "firebrick")
+  if (n==N-1 | n==N){
+    axis(1,c(1,2,4,8,12,13),c("1 quarter","","1 year","2 years","3 years",""),cex.axis=0.9)
+  } else {
+    axis(1,c(1,2,4,8,12,13),c("1 quarter","","1 year","2 years","3 years",""),cex.axis=0.9)
+  }
+  axis(2,c(ylims[1],0,ylims[2]),round(c(ylims[1],0,ylims[2]),3))
+  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col=adjustcolor("#05386B", alpha.f = 0.5),border="salmon")
+  lines(hh, IRFs.k1[n,hh],lwd=2,col="red")
+}
+}
+#------------------------------
+#Reset data
+#------------------------------
+
+#Filter data
+
+start.date = '1979 Q2'
+end.date = '2023 Q1'
+
+mearnl = mearnl %>% filter(mearnl$Date >= start.date)
+mearnl = mearnl %>% filter(mearnl$Date < end.date)
+
+urate = urate %>% filter(urate$Date >= start.date)
+urate = urate %>% filter(urate$Date < end.date)
+
+rgdpcapl = rgdpcapl %>% filter(rgdpcapl$Date >= start.date)
+rgdpcapl = rgdpcapl %>% filter(rgdpcapl$Date < end.date)
+
+#CPI doesn't work, but if I change name and change back it works
+#Yes this is an ongoing issue, don't ask me
+CPI2 = CPIl
+
+CPI2 = CPI2 %>% filter(CPI2$Date >= start.date)
+CPIl = CPI2 %>% filter(CPI2$Date < end.date)
+
+govexl = govexl %>% filter(govexl$Date >= start.date)
+govexl = govexl %>% filter(govexl$Date < end.date)
+
+M2l = M2l %>% filter(M2l$Date >= start.date)
+M2l = M2l %>% filter(M2l$Date < end.date)
+
+#set up y matrix
+#doing it like this so I can toggle stuff off and on
+y = cbind(mearnl[,2], urate[,2])
+y = cbind(y, rgdpcapl[,2])
+y = cbind(y, CPIl[,2])
+y = cbind(y, govexl[,2])
+y = cbind(y, M2l[,2])
+
+#Need to set y as matrix or X becomes wrong object type for future calcs
+y = as.matrix(y)
+#use n for anywhere I need the length of the data
+#this allows for multiple forms of data to be used with varying end dates
+n = nrow(y)
+#To ensure consistency later in setting Sign Restrictions
+#y has variables in the following order
+#Mean Earnings
+#Unemployment Rate
+#Real GDP Per Capita
+#Consumer Price Index
+#Real Government Consumption Expenditure
+#M2 Money Supply
+#Change the above as needed to ensure all sign restrictions are on the left
+
+# create Y and X
+############################################################  
+
+Y       = ts(y[(p+1):n,])
+X       = matrix(1,nrow(Y),1)
+for (i in 1:p){
+  X     = cbind(X,y[5:n-i,])
+}
+
+#------------------------------
 #Final extension and plot
 #------------------------------
 
 #p = 4 is default, no need to re-enter, only raises odds of mis-entered data
 extension.post.mode <- v.posterior.mode(Y, X, k1 = 1, k2 = 100)
+
 set.seed(69420)
 extension.mcmc <-mh.mcmc(Y, X, p=4, c=0.000228, W = solve(extension.post.mode$hessian), 
                 theta.init = extension.post.mode$maximizer, k1 = 1, S.mh = 20000)
+
 plot.ts(extension.mcmc$Theta, main = "Metropolis MCMC draws")
 
 
+
+extended.model <- sign.extension(Y, X, S = 500, sign.restrictions = R1, k1 = 1, 
+                                 Theta.mh = extension.mcmc$Theta[10001:20000,])
+
+
+irf.plot(A.posterior = extended.model$A.posterior, B0.posterior = extended.model$B0, shock.var = 1)
+
 ```
+
+The above graphs are generated using log differences in contrast to previous data.Urate continues to be in percentage terms and is unchanged. This is due to using simply first difference data returning extremely aberrant results resulting in rapid, exponential changes when impulse response functions were estimated. No other solution to this problem was found. The same sign restrictions as before are utilized.
+
+The current impulse response functions show that there is a minimal ongoing effect on weekly earnings. That is that a one period shock tends to persist in full but lacks any significant ongoing effects on earnings. Unemployment experiences a shift to a higher level that slowly rises over time before begging to decrease once more. The time horizon on this shift is relatively long, implying that the declining wages in real terms due to inflation could be the cause of unemployment rate lowering over time. Real GDP Per Capita shows a slight change , initially a drop before it rises slightly once more, but the impact is very small. CPI does show a significant increase throughout the first year before it continues to rise again at the prior rate. Government spending exhibits no strong changes, not does M2 money supply.
+
+For more meaningful comparison, the basic model using log differences is shown below 
+```{r Repeat of Basic Model, echo=FALSE,results='hide',fig.keep='all'}
+
+#| echo: false
+#| code-fold: true
+#| code-summary: "Show code"
+#| message: false
+#| warning: false
+#| label: Log Difference Basic Model
+set.seed(69420)
+RW_res <-  sign.basic(Y, X, p, S=1000, R1, k1 = 1, k2 = 100, shockvar = 1)
+round(RW_res$A.mean,1)
+
+basic.model = RW_res
+
+N <- dim(basic.model$A.posterior)[2]
+
+S <- dim(basic.model$A.posterior)[3]
+p <- 4
+h <- 12
+
+
+
+A.posterior.basic <- basic.model$A.posterior
+
+B0.posterior.basic <- basic.model$B0
+
+B.posterior.basic <- array(NA, c(N,N,S))
+
+for (s in 1:S){
+  B.posterior.basic[,,s] <- solve(B0.posterior.basic[,,s])
+}
+
+
+A.posterior <- A.posterior.basic
+B.posterior <- B.posterior.basic
+
+IRF.posterior     = array(NA,c(N,N,h+1,S))
+IRF.inf.posterior = array(NA,c(N,N,S))
+FEVD.posterior    = array(NA,c(N,N,h+1,S))
+J                 = cbind(diag(N),matrix(0,N,N*(p-1)))
+
+pb = txtProgressBar(min = 0, max = S, initial = 0) 
+
+for (s in 1:S){
+  setTxtProgressBar(pb,s)
+  A.bold          = rbind(t(A.posterior[2:(1+N*p),,s]),cbind(diag(N*(p-1)),matrix(0,N*(p-1),N)))
+  IRF.inf.posterior[,,s]          = J %*% solve(diag(N*p)-A.bold) %*% t(J) %*% B.posterior[,,s]
+  A.bold.power    = A.bold
+  for (i in 1:(h+1)){
+    if (i==1){
+      IRF.posterior[,,i,s]        = B.posterior[,,s]
+    } else {
+      IRF.posterior[,,i,s]        = J %*% A.bold.power %*% t(J) %*% B.posterior[,,s]
+      A.bold.power                = A.bold.power %*% A.bold
+    }
+    for (n in 1:N){
+      for (nn in 1:N){
+        FEVD.posterior[n,nn,i,s]  = sum(IRF.posterior[n,nn,1:i,s]^2)
+      }
+    }
+    FEVD.posterior[,,i,s]         = diag(1/apply(FEVD.posterior[,,i,s],1,sum))%*%FEVD.posterior[,,i,s]
+  }
+}
+FEVD.posterior    = 100*FEVD.posterior
+
+varname_vec <- c("Weekly Earnings", "Unemployment Rate", "Real GDP Per Capita", "CPI", "Government Spending", "M2 Money Supply")
+
+shock.var <- 1
+IRFs.k1           = apply(IRF.posterior[1:6,shock.var,,],1:2,mean)
+IRFs.inf.k1       = apply(IRF.inf.posterior[1:6,shock.var,],1,mean)
+rownames(IRFs.k1) = varname_vec
+
+IRFs.k1.hdi    = apply(IRF.posterior[1:6,shock.var,,],1:2,hdi, credMass=0.68)
+hh          = 1:(h+1)
+
+#This needs to look prettier
+#hmm. My graphs are not rendering correctly
+
+#pdf(file="irf-GFCF.pdf", height=9, width=12)
+par(mfrow=c(3,2), mar=c(3,3.5,2,2),cex.axis=1.5, cex.lab=1.5)
+for (n in 1:N){
+  ylims     = range(IRFs.k1[n,hh],IRFs.k1.hdi[,n,hh])
+  plot(hh,IRFs.k1[n,hh], type="l", ylim=ylims, axes=FALSE, xlab="", ylab="",
+       main=rownames(IRFs.k1)[n])
+  abline(h = 0, col = "firebrick")
+  if (n==N-1 | n==N){
+    axis(1,c(1,2,4,8,12,13),c("1 quarter","","1 year","2 years","3 years",""),cex.axis=0.9)
+  } else {
+    axis(1,c(1,2,4,8,12,13),c("1 quarter","","1 year","2 years","3 years",""),cex.axis=0.9)
+  }
+  axis(2,c(ylims[1],0,ylims[2]),round(c(ylims[1],0,ylims[2]),3))
+  polygon(c(hh,(h+1):1), c(IRFs.k1.hdi[1,n,hh],IRFs.k1.hdi[2,n,(h+1):1]), col=adjustcolor("#05386B", alpha.f = 0.5),border="salmon")
+  lines(hh, IRFs.k1[n,hh],lwd=2,col="red")
+}
+```
+
+
 
 ## References {.unnumbered}
 
