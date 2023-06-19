@@ -529,8 +529,6 @@ As the shock is to earnings, all other relations are free. By many in the US it 
 #| code-fold: true
 #| code-summary: "Show code"
 
-#I hope this code works
-
 #equalize length of data
 #keep only values past the date of the newest data series
 #keep only values before 2023
@@ -1105,11 +1103,7 @@ Moving forward into the next model, COVID-19 data will be included but it will b
 #| code-summary: "Show code"
 #| lael: Log Difference Covid-Adjustment
 
-#THROWING IN MORE STOLEN CODE
-#analyze this block by block tomorrow
-
-#ensure that proper variables are all utilized as our data is different
-#And I don't trust code reusability (and so he was correct)
+#code altered to improve robustness and reusability
 #make sure it all runs and returns expected results
 
 #Ah he's auto culling data
