@@ -154,12 +154,6 @@ CPI = CPI %>%
 colnames(CPI) = c("Date", "CPI")
 CPI$Date = as.yearqtr(CPI$Date, format = "%YQ%q")
 
-#should maybe include M2 money supply as a possible vector
-#issue with M2 money suppl defiintion being changed
-#large upswing in 2020 that is not due to real changes
-#Also truncates data 2 years later
-#large information loss given already small number of observations
-#do not include at present 
 
 #load in government consumption spending
 govex = fredr(series_id = "A955RX1Q020SBEA")
@@ -364,6 +358,7 @@ First Differences shown below.
 #| warning: false
 #| code-fold: true
 #| code-summary: "First-Differenced Plots"
+
 #Take first differences
 #It's making me select an end point if I want to use not all of column 1
 n = nrow(mearn)
@@ -533,12 +528,11 @@ As the shock is to earnings, all other relations are free. By many in the US it 
 #keep only values past the date of the newest data series
 #keep only values before 2023
 
-#Comment out to see if I can cut this
-
-#n = nrow(urate)
-#urate = urate[2:n,]
 
 #Honestly, if I were smart this would be some fancy function, I'm not, so it isn't
+#I know how to but I don't have time to test to make sure it works
+#just have start date and end date as inputs
+#Then can just run lines 540 to 615 as a function
 
 start.date = '1979 Q2'
 end.date = '2023 Q1'
@@ -621,42 +615,6 @@ for (i in 1:p){
 t0          = proc.time() # read processor time
 
 
-
-#This might be junk code but I worry about removing it and breaking something
-#Leaving for now, will remove later if I have time
-
-# MLE
-############################################################
-A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
-Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
-
-#kappa 1 is 1 if non-stationary
-#smaller than 1 if stationary
-kappa.1     = 1^2
-#k2 = 100 is given for Minnesota Prior
-kappa.2     = 100
-#kappa 3 is 1 just given the fact that it determines A.prior
-#which invovles the identity matrix
-kappa.3     = 1
-A.prior     = matrix(0,nrow(A.hat),ncol(A.hat))
-#bit in brackets is just 2:N+1
-A.prior[2:7,] = kappa.3*diag(N)
-V.prior     = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
-S.prior     = diag(diag(Sigma.hat))
-nu.prior    = N+1
-
-
-# normal-inverse Wishard posterior parameters
-############################################################
-
-#This is all just given and can be reused infinitely
-V.bar.inv   = t(X)%*%X + diag(1/diag(V.prior))
-V.bar       = solve(V.bar.inv)
-A.bar       = V.bar%*%(t(X)%*%Y + diag(1/diag(V.prior))%*%A.prior)
-nu.bar      = nrow(Y) + nu.prior
-S.bar       = S.prior + t(Y)%*%Y + t(A.prior)%*%diag(1/diag(V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
-S.bar.inv   = solve(S.bar)
-
 #Ok so all of that above should get me all the posterior distribution
 #Now I need to actually do anything whatsoever with sign restrctions
 
@@ -668,12 +626,6 @@ set.seed(123456)
 sign.restrictions = c(0,1,1,1,1,0)
 #this is fine just regardless of how many there are
 R1            = diag(sign.restrictions)
-#Check how to derive
-#I think this is just the posterior
-A = A.bar
-#check how to derive
-#pretty sure this is also just a posterior
-Sigma         = S.bar
 
 
 ```
@@ -1701,8 +1653,6 @@ rownames(IRFs.k1) = varname_vec
 IRFs.k1.hdi    = apply(IRF.posterior[1:6,shock.var,,],1:2,hdi, credMass=0.68)
 hh          = 1:(h+1)
 
-#This needs to look prettier
-#hmm. My graphs are not rendering correctly
 
 #pdf(file="irf-GFCF.pdf", height=9, width=12)
 par(mfrow=c(3,2), mar=c(3,3.5,2,2),cex.axis=1.5, cex.lab=1.5)
